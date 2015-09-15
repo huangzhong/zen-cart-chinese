@@ -2,10 +2,10 @@
 /**
  * @package Installer
  * @access private
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: DrByte  Tue Aug 28 17:13:32 2012 -0400 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: DrByte  Thu Apr 24 13:48:29 2014 -0400 Modified in v1.5.4 $
  */
 
   if ($zc_install->error) include(DIR_WS_INSTALL_TEMPLATE . 'templates/display_errors.php');
@@ -83,6 +83,18 @@
     <div class="input">
       <input <?php if ($needs_v1_5_1) {echo "checked";} ?> name="version[]" type="checkbox" id="checkbox23" value="1.5.0" tabindex="23" />
       <label for="checkbox22">数据库从 1.5.0 升级到 1.5.1</label>
+    </div>
+    <div class="input">
+      <input <?php if ($needs_v1_5_2) {echo "checked";} ?> name="version[]" type="checkbox" id="checkbox24" value="1.5.1" tabindex="24" />
+      <label for="checkbox24">数据库从 1.5.1 升级到 1.5.2</label>
+    </div>
+    <div class="input">
+      <input <?php if ($needs_v1_5_3) {echo "checked";} ?> name="version[]" type="checkbox" id="checkbox25" value="1.5.2" tabindex="25" />
+      <label for="checkbox25">数据库从 1.5.2 升级到 1.5.3</label>
+    </div>
+    <div class="input">
+      <input <?php if ($needs_v1_5_4) {echo "checked";} ?> name="version[]" type="checkbox" id="checkbox26" value="1.5.3" tabindex="26" />
+      <label for="checkbox26">数据库从 1.5.3 升级到 1.5.4</label>
     </div>
     </fieldset>
     <br />

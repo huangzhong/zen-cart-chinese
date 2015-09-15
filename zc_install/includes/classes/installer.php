@@ -4,10 +4,10 @@
  * This class is used during the installation and upgrade processes
  * @package Installer
  * @access private
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: DrByte  Thu Apr 5 15:25:02 2012 +0000 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: Ian Wilson  Modified in v1.5.4 $
  */
 
 
@@ -154,7 +154,7 @@
 
     function functionExists($zp_type, $zp_error_text, $zp_error_code) {
       if ($zp_type == 'mysql') {
-        $function = 'mysql_connect';
+        $function = 'mysqli_connect';
       }
       if (!function_exists($function)) {
         $this->setError($zp_error_text, $zp_error_code, true);
@@ -164,14 +164,14 @@
     function dbConnect($zp_type, $zp_host, $zp_database, $zp_username, $zp_pass, $zp_error_text, $zp_error_code, $zp_error_text2=ERROR_TEXT_DB_NOTEXIST, $zp_error_code2=ERROR_CODE_DB_NOTEXIST) {
       if ($this->error == false) {
         if ($zp_type == 'mysql') {
-          $link = @mysql_connect($zp_host, $zp_username, $zp_pass);
+          $link = @mysqli_connect($zp_host, $zp_username, $zp_pass);
           if ($link == false ) {
-            $this->setError($zp_error_text.'<br />'.@mysql_error(), $zp_error_code, true);
+            $this->setError($zp_error_text.'<br />'.@mysqli_error(), $zp_error_code, true);
           } else {
-            if (!@mysql_select_db($zp_database, $link)) {
-              $this->setError($zp_error_text2.'<br />'.@mysql_error(), $zp_error_code2, true);
+            if (!@mysqli_select_db($link, $zp_database)) {
+              $this->setError($zp_error_text2.'<br />'.@mysqli_error(), $zp_error_code2, true);
             } else {
-              @mysql_close($link);
+              @mysqli_close($link);
             }
           }
         }
@@ -180,7 +180,7 @@
 
     function dbCreate($zp_create, $zp_type, $zp_name, $zp_error_text, $zp_error_code) {
       if ($zp_create == 'true' && $this->error == false) {
-        if ($zp_type == 'mysql' && (@mysql_query('CREATE DATABASE ' . $zp_name) == false)) {
+        if ($zp_type == 'mysql' && (@mysqli_query('CREATE DATABASE ' . $zp_name) == false)) {
           $this->setError($zp_error_text, $zp_error_code, true);
         }
       }
@@ -190,11 +190,11 @@
       //    echo $zp_create;
       if ($zp_create != 'true' && $this->error == false) {
         if ($zp_type == 'mysql') {
-          $link = @mysql_connect($zp_host, $zp_username, $zp_pass);
-          if (@mysql_select_db($zp_name, $link) == false) {
-            $this->setError($zp_error_text.'<br />'.@mysql_error(), $zp_error_code, true);
+          $link = @mysqli_connect($zp_host, $zp_username, $zp_pass);
+          if (@mysqli_select_db($link, $zp_name) == false) {
+            $this->setError($zp_error_text.'<br />'.@mysqli_error(), $zp_error_code, true);
           }
-          @mysql_close($link);
+          @mysqli_close($link);
         }
       }
     }
@@ -243,7 +243,6 @@
       curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch, CURLOPT_TIMEOUT, 11);
-      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); /* compatibility for SSL communications on some Windows servers (IIS 5.0+) */
       if ($proxy) {
         curl_setopt ($ch, CURLOPT_HTTPPROXYTUNNEL, true);
         @curl_setopt ($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
@@ -332,7 +331,7 @@
     function getConfigKeysAsPost() {
       $string = '';
       foreach($this->configKeys as $key => $value) {
-        $string .= '<input type="hidden" name="zcinst[' . $key . ']" value="' . $value . '" />' . "\n";
+        $string .= '<input type="hidden" name="zcinst[' . $key . ']" value="' . htmlspecialchars($value) . '" />' . "\n";
       }
       return $string;
     }
@@ -403,29 +402,53 @@
     }
 
     function writeConfigFiles() {
-      $virtual_http_path = parse_url($this->getConfigKey('virtual_http_path'));
+      $virtual_http_path = zen_parse_url($this->getConfigKey('virtual_http_path'));
       $http_server = $virtual_http_path['scheme'] . '://' . $virtual_http_path['host'];
       $http_catalog = (isset($virtual_http_path['path'])) ? $virtual_http_path['path'] : '';
+
+      // handle /~username cases common to shared-ssl
+      $testarray = explode('/', trim($http_catalog, '/'));
+      if (sizeof($testarray) > 0) {
+        if (substr($testarray[0], 0, 1) == '~') {
+          $http_server .= '/' . $testarray[0];
+          array_shift($testarray);
+          $http_catalog = implode('/', $testarray);
+        }
+      }
+      $http_catalog = str_replace('//', '/', '/' . trim($http_catalog, '/') . '/');
+
       if (isset($virtual_http_path['port']) && !empty($virtual_http_path['port'])) {
         $http_server .= ':' . $virtual_http_path['port'];
       }
-      if (substr($http_catalog, -1) != '/') {
-        $http_catalog .= '/';
-      }
+
       $sql_cache_dir = (int)$this->getConfigKey('DIR_FS_SQL_CACHE');
       $cache_type = $this->getConfigKey('SQL_CACHE_METHOD');
+
       $https_server = $this->getConfigKey('virtual_https_server');
       $https_catalog = $this->getConfigKey('virtual_https_path');
+
       //if the https:// entries were left blank, use non-SSL versions instead of blank
       if ($https_server == '' || trim($https_server) == '' || $https_server == 'https://' || $https_server == '://') $https_server = $http_server;
       if (trim($https_catalog) == '') $https_catalog = $http_catalog;
-      $https_catalog_path = preg_replace('/' . preg_quote($https_server, '/') . '/', '', $https_catalog) . '/';
-      $https_catalog = $https_catalog_path;
+
+      // handle /~username cases common to shared-ssl
+      $testarray = explode('/', trim(str_replace($https_server, '', $https_catalog), '/'));
+      if (sizeof($testarray) > 0) {
+        if (substr($testarray[0], 0, 1) == '~') {
+          $https_server .= '/' . $testarray[0];
+          array_shift($testarray);
+          $https_catalog = implode('/', $testarray);
+        }
+      }
+
+      $https_catalog_path = preg_replace('#' . preg_quote($https_server, '/') . '#', '', $https_catalog);
+      $https_catalog = str_replace('//', '/', '/' . trim($https_catalog_path, '/') . '/');
 
       //now let's write the files
       // Catalog version first:
       require('includes/store_configure.php');
       $config_file_contents_catalog = $file_contents;
+
       $fp = @fopen($this->getConfigKey('DIR_FS_CATALOG') . '/includes/configure.php', 'w');
       if ($fp) {
         fputs($fp, $file_contents);
@@ -570,13 +593,13 @@
     function dbAfterLoadActions() {
       $this->dbActivate(); // can likely remove this line for v1.4
       //update the cache folder setting:
-      $sql = "update ". $this->getConfigKey('DB_PREFIX') ."configuration set configuration_value='". $this->getConfigKey('DIR_FS_SQL_CACHE') ."' where configuration_key = 'SESSION_WRITE_DIRECTORY'";
+      $sql = "update ". $this->getConfigKey('DB_PREFIX') ."configuration set configuration_value='". $this->db->prepareInput($this->getConfigKey('DIR_FS_SQL_CACHE')) ."' where configuration_key = 'SESSION_WRITE_DIRECTORY'";
       $this->db->Execute($sql);
       //update the logging_folder setting:
-      $sql = "update ". $this->getConfigKey('DB_PREFIX') ."configuration set configuration_value='". $this->getConfigKey('DIR_FS_SQL_CACHE') ."/page_parse_time.log' where configuration_key = 'STORE_PAGE_PARSE_TIME_LOG'";
+      $sql = "update ". $this->getConfigKey('DB_PREFIX') ."configuration set configuration_value='". $this->db->prepareInput($this->getConfigKey('DIR_FS_SQL_CACHE')) ."/page_parse_time.log' where configuration_key = 'STORE_PAGE_PARSE_TIME_LOG'";
       $this->db->Execute($sql);
       //update the phpbb setting:
-//      $sql = "update ". $this->getConfigKey('DB_PREFIX') ."configuration set configuration_value='". $this->getConfigKey('PHPBB_ENABLE') ."' where configuration_key = 'PHPBB_LINKS_ENABLED'";
+//      $sql = "update ". $this->getConfigKey('DB_PREFIX') ."configuration set configuration_value='". $this->db->prepareInput($this->getConfigKey('PHPBB_ENABLE')) ."' where configuration_key = 'PHPBB_LINKS_ENABLED'";
 //      $this->db->Execute($sql);
     }
 
@@ -659,7 +682,7 @@
 
     function dbAdminSetup() {
       $this->dbActivate();
-      $sql = "update " . DB_PREFIX . "admin set admin_name = '" . $this->configInfo['admin_username'] . "', admin_email = '" . $this->configInfo['admin_email'] . "', admin_pass = '" . zen_encrypt_password($this->configInfo['admin_pass']) . "', pwd_last_change_date = 0, reset_token = '" . (time() + (72 * 60 * 60)) . '}' . zen_encrypt_password($this->configInfo['admin_pass']) . "' where admin_id = 1";
+      $sql = "update " . DB_PREFIX . "admin set admin_name = '" . $this->db->prepareInput($this->configInfo['admin_username']) . "', admin_email = '" . $this->db->prepareInput($this->configInfo['admin_email']) . "', admin_pass = '" . zen_encrypt_password($this->configInfo['admin_pass']) . "', pwd_last_change_date = 0, reset_token = '" . (time() + (72 * 60 * 60)) . '}' . $this->db->prepareInput(zen_encrypt_password($this->configInfo['admin_pass'])) . "' where admin_id = 1";
       $this->db->Execute($sql) or die("Error in query: $sql".$this->db->ErrorMsg());
 
       // enable/disable automatic version-checking
@@ -678,13 +701,13 @@
         if ($prefix == '^^^') $prefix = DB_PREFIX;
         $admin_name = zen_db_prepare_input($admin_name);
         $admin_pass = zen_db_prepare_input($admin_pass);
-//@TODO: deal with super-user requirement and expired-passwords?
-        $sql = "select admin_id, admin_name, admin_pass from " . $prefix . "admin where admin_name = '" . $admin_name . "'";
         //open database connection to run queries against it
         $this->dbActivate();
         $this->db->Close();
         unset($this->db);
         $this->dbActivate();
+//@TODO: deal with super-user requirement and expired-passwords?
+        $sql = "select admin_id, admin_name, admin_pass from " . $prefix . "admin where admin_name = '" . $this->db->prepareInput($admin_name) . "'";
         $result = $this->db->Execute($sql);
         if ($result->EOF || $admin_name != $result->fields['admin_name'] || !zen_validate_password($admin_pass, $result->fields['admin_pass'])) {
           $this->setError(ERROR_TEXT_ADMIN_PWD_REQUIRED, ERROR_CODE_ADMIN_PWD_REQUIRED, true);
@@ -701,7 +724,7 @@
       $this->db->Close();
       unset($this->db);
       $this->dbActivate();
-      $sql = "UPDATE " . $prefix . "admin SET admin_profile = 1 WHERE admin_id = " . $this->candidateSuperuser;
+      $sql = "UPDATE " . $prefix . "admin SET admin_profile = 1 WHERE admin_id = " . (int)$this->candidateSuperuser;
       $this->db->Execute($sql) or die("Error in query: $sql".$this->db->ErrorMsg());
       $this->db->Close();
     }
@@ -892,6 +915,39 @@
        * sanitize $_SERVER vars
        */
       $_SERVER['REMOTE_ADDR'] = preg_replace('/[^0-9.%:]/', '', $_SERVER['REMOTE_ADDR']);
+    }
+
+    function checkIsZCVersionCurrent()
+    {
+      $new_version = TEXT_VERSION_CHECK_CURRENT; //set to "current" by default
+      $lines = @file(NEW_VERSION_CHECKUP_URL);
+      //check for major/minor version info
+      if ((trim($lines[0]) > PROJECT_VERSION_MAJOR) || (trim($lines[0]) == PROJECT_VERSION_MAJOR && trim($lines[1]) > PROJECT_VERSION_MINOR)) {
+        $new_version = TEXT_VERSION_CHECK_NEW_VER . trim($lines[0]) . '.' . trim($lines[1]) . ' :: ' . $lines[2];
+      }
+      //check for patch version info
+      // first confirm that we're at latest major/minor -- otherwise no need to check patches:
+      if (trim($lines[0]) == PROJECT_VERSION_MAJOR && trim($lines[1]) == PROJECT_VERSION_MINOR) {
+      //check to see if either patch needs to be applied
+        if (trim($lines[3]) > intval(PROJECT_VERSION_PATCH1) || trim($lines[4]) > intval(PROJECT_VERSION_PATCH2)) {
+        // reset update message, since we WILL be advising of an available upgrade
+          if ($new_version == TEXT_VERSION_CHECK_CURRENT) $new_version = '';
+          //check for patch #1
+          if (trim($lines[3]) > intval(PROJECT_VERSION_PATCH1)) {
+          // if ($new_version != '') $new_version .= '<br />';
+            $new_version .= (($new_version != '') ? '<br />' : '') . '<span class="alert">' . TEXT_VERSION_CHECK_NEW_PATCH . trim($lines[0]) . '.' . trim($lines[1]) . ' - ' .TEXT_VERSION_CHECK_PATCH .': [' . trim($lines[3]) . '] :: ' . $lines[5] . '</span>';
+          }
+          if (trim($lines[4]) > intval(PROJECT_VERSION_PATCH2)) {
+          // if ($new_version != '') $new_version .= '<br />';
+            $new_version .= (($new_version != '') ? '<br />' : '') . '<span class="alert">' . TEXT_VERSION_CHECK_NEW_PATCH . trim($lines[0]) . '.' . trim($lines[1]) . ' - ' .TEXT_VERSION_CHECK_PATCH .': [' . trim($lines[4]) . '] :: ' . $lines[5] . '</span>';
+          }
+        }
+      }
+      // prepare displayable download link
+      if ($new_version != '' && $new_version != TEXT_VERSION_CHECK_CURRENT) {
+        $new_version .= '<a href="' . $lines[6] . '" target="_blank">'. TEXT_VERSION_CHECK_DOWNLOAD .'</a>';
+      }
+      return $new_version;
     }
 
 

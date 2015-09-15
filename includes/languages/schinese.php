@@ -1,10 +1,10 @@
 <?php
 /**
  * @package languageDefines
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: schinese.php 2011-01-10 Jack $
+ * @version GIT: $Id: Author: Jack  Modified in v1.5.4 $
  * Simplified Chinese version   http://www.zen-cart.cn
  */
 
@@ -17,9 +17,10 @@
   define('FOOTER_TEXT_BODY', '版权所有 &copy; ' . date('Y') . ' <a href="' . zen_href_link(FILENAME_DEFAULT) . '" target="_blank">' . STORE_NAME . '</a>. Powered by <a href="http://www.zen-cart.cn" target="_blank">Zen Cart</a>');
 
 // look in your $PATH_LOCALE/locale directory for available locales..
-  setlocale(LC_TIME, 'zh_CN.utf-8');
+  $locales = array('zh_CN.utf8');
+  @setlocale(LC_TIME, $locales);
   define('DATE_FORMAT_SHORT', '%Y/%m/%d');  // this is used for strftime()
-  define('DATE_FORMAT_LONG', ' %Y年 %m月 %d日'); // this is used for strftime()
+  define('DATE_FORMAT_LONG', ' %Y/%m/%d'); // this is used for strftime()
   define('DATE_FORMAT', 'Y/m/d'); // this is used for date()
   define('DATE_TIME_FORMAT', DATE_FORMAT_SHORT . ' %H:%M:%S');
 
@@ -374,10 +375,10 @@
 // only for where multiple add to cart is used:
   define('SUCCESS_ADDED_TO_CART_PRODUCTS', '成功添加选择的商品到购物车 ...');
 
-  define('TEXT_PRODUCT_WEIGHT_UNIT','克');
+  define('TEXT_PRODUCT_WEIGHT_UNIT','磅');
 
 // Shipping
-  define('TEXT_SHIPPING_WEIGHT','克');
+  define('TEXT_SHIPPING_WEIGHT','磅');
   define('TEXT_SHIPPING_BOXES', '箱');
 
 // Discount Savings
@@ -396,8 +397,8 @@
   define('TEXT_BANNER_BOX','请访问我们的赞助商...');
 
 // banner box 2
-  define('BOX_HEADING_BANNER_BOX2','支付方式');
-  define('TEXT_BANNER_BOX2','支付方式');
+  define('BOX_HEADING_BANNER_BOX2','您知道吗 ...');
+  define('TEXT_BANNER_BOX2','马上去看看!');
 
 // banner_box - all
   define('BOX_HEADING_BANNER_BOX_ALL','赞助商');
@@ -478,16 +479,17 @@
   define('ERROR_PRODUCT_QUANTITY_MAX_SHOPPING_CART',' ... 最多购买数量错误 - ');
 
   define('WARNING_SHOPPING_CART_COMBINED', '提示: 为了方便购物，您当前购物车中的商品与您以前购物车中的商品合并了，结帐前请查看您的购物车。');
+  define('WARNING_PRODUCT_QUANTITY_ADJUSTED', '数量已根据库存调整。');
 
 // error on checkout when $_SESSION['customers_id' does not exist in customers table
   define('ERROR_CUSTOMERS_ID_INVALID', '无法核对客户信息!<br />请登录或重新注册 ...');
 
   define('TABLE_HEADING_FEATURED_PRODUCTS','推荐商品');
 
-  define('TABLE_HEADING_NEW_PRODUCTS', '%s新进商品');
+  define('TABLE_HEADING_NEW_PRODUCTS', '新进商品');
   define('TABLE_HEADING_UPCOMING_PRODUCTS', '预售商品');
   define('TABLE_HEADING_DATE_EXPECTED', '预售日期');
-  define('TABLE_HEADING_SPECIALS_INDEX', '%s特价商品');
+  define('TABLE_HEADING_SPECIALS_INDEX', '特价商品');
 
   define('CAPTION_UPCOMING_PRODUCTS','这些商品很快会到货');
   define('SUMMARY_TABLE_UPCOMING_PRODUCTS','以下是预售商品清单以及预计到货时间');
@@ -585,6 +587,7 @@
 
 // misc
   define('COLON_SPACER', ':&nbsp;&nbsp;');
+  define('PAYMENT_JAVASCRIPT_DISABLED', '无法继续结帐，因为 Javascript 已禁用，请启用后再继续。');
 
 // table headings for cart display and upcoming products
   define('TABLE_HEADING_QUANTITY', '数量');
@@ -601,12 +604,15 @@
   define('TABLE_HEADING_LOGIN_DETAILS', '登录资料');
   define('TABLE_HEADING_REFERRAL_DETAILS', '有人介绍您到我们的商店吗?');
 
+  define('ERROR_TEXT_COUNTRY_DISABLED_PLEASE_CHANGE', '很抱歉，我们无法处理账单或配送地址"%s".  请更新地址后继续。');
+
   define('ENTRY_EMAIL_PREFERENCE','电子商情和邮件格式');
   define('ENTRY_EMAIL_HTML_DISPLAY','HTML');
   define('ENTRY_EMAIL_TEXT_DISPLAY','文本');
   define('EMAIL_SEND_FAILED','错误: 无法发送电子邮件到: "%s" <%s> 标题为: "%s"');
 
   define('DB_ERROR_NOT_CONNECTED', '错误 - 无法连接到数据库');
+  define('ERROR_DATABASE_MAINTENANCE_NEEDED', '<a href="http://www.zen-cart.com/content.php?334-ERROR-0071-There-appears-to-be-a-problem-with-the-database-Maintenance-is-required" target="_blank">ERROR 0071: 数据库错误，需要维护。</a>');
 
 // EZ-PAGES Alerts
   define('TEXT_EZPAGES_STATUS_HEADER_ADMIN', '警告: 简易页面页眉 - On 仅限管理员IP');

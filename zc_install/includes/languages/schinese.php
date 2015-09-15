@@ -3,10 +3,10 @@
  * Main Chinese language file for installer
  * @package Installer
  * @access private
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: DrByte  Thu Aug 16 01:57:33 2012 -0400 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: DrByte  Thu Apr 24 13:48:29 2014 -0400 Modified in v1.5.4 $
  */
 /**
  * defining language components for the page
@@ -231,8 +231,8 @@ if (isset($_GET['error_code'])) {
 
 switch ($error_code) {
   case ('1'):
-    define('POPUP_ERROR_HEADING', '检测到PHP版本4.1.2');
-    define('POPUP_ERROR_TEXT', '某些PHP版本4.1.2存在问题，会导致Zen Cart的管理页面无法存取。如果可能的话，建议升级您的PHP。<br /><br />最低要求为PHP 4.3.2 或以上版本。<br />强烈建议使用PHP 4.3.11 或以上版本。');
+    define('POPUP_ERROR_HEADING', '检测到 PHP 版本 4.1.2');
+    define('POPUP_ERROR_TEXT', '不再支持 PHP 版本 4，最低要求 PHP 5.2.10。');
     
   break;
   case ('2'):
@@ -257,13 +257,11 @@ switch ($error_code) {
   break;
   case ('6'):
     define('POPUP_ERROR_HEADING', 'HTTPS服务器');
-    define('POPUP_ERROR_TEXT', '这是您的安全/SSL服务器的网址。该地址与您的服务器上的SSL/安全模式的设置有关。英文说明见<a href="http://tutorials.zen-cart.com/index.php?article=14" target="_blank">FAQ Entry</a>。');
-    
+    define('POPUP_ERROR_TEXT', '这是您的安全/SSL服务器的网址。该地址与您的服务器上的SSL/安全模式的设置有关。英文说明见<a href="http://www.zen-cart.com/content.php?56" target="_blank">FAQ Entry</a>。');
   break;
   case ('7'):
     define('POPUP_ERROR_HEADING', 'HTTPS路径');
-    define('POPUP_ERROR_TEXT', '这是您在浏览器里输入的在安全/SSL模式下访问您的Zen Cart页面的地址。英文说明见<a href="http://tutorials.zen-cart.com/index.php?article=14" target="_blank">FAQ Entry</a>。');
-    
+    define('POPUP_ERROR_TEXT', '这是您在浏览器里输入的在安全/SSL模式下访问您的Zen Cart页面的地址。英文说明见<a href="http://www.zen-cart.com/content.php?56" target="_blank">FAQ Entry</a>。');
   break;
   case ('8'):
     define('POPUP_ERROR_HEADING', 'OpenSSL');
@@ -505,7 +503,6 @@ switch ($error_code) {
   case ('55'):
     define('POPUP_ERROR_HEADING', 'PHP版本不支持');
     define('POPUP_ERROR_TEXT', '您服务器的PHP版本不支持Zen Cart中文版。<br /><br />最低要求为PHP 5.2.14。<br />建议使用 PHP 5.3.3 及以上版本<br /><br /><br />如果使用旧版的PHP，可能无法访问Zen Cart的管理页面、存在安全隐患等。请升级PHP版本。');
-    
   break;
   case ('56'):
     define('POPUP_ERROR_HEADING', '管理部分的文件configure.php不可写');
@@ -651,15 +648,15 @@ switch ($error_code) {
   break;
   case ('89'):
     define('POPUP_ERROR_HEADING','GD 支持详情');
-    define('POPUP_ERROR_TEXT','Zen Cart&reg; uses GD support in PHP, if available, to do image management activities.  It is preferred to have at least version 2.0 available.<br /><br />If GD support is not compiled into your PHP install, you may want to ask your hosting company to do this for you.');
+    define('POPUP_ERROR_TEXT','Zen Cart&reg; uses GD support in PHP, if available, to do image management activities.  It is preferred to have at least GD version 2.0 available.<br /><br />If GD support is not compiled into your PHP install, you may want to ask your hosting company to do this for you.');
   break;
   case ('90'):
     define('POPUP_ERROR_HEADING','未在MySQL 5.7 以上版本测试');
-    define('POPUP_ERROR_TEXT','Zen Cart 中文版1.5 支持 MySQL 5');
+    define('POPUP_ERROR_TEXT','Zen Cart 中文版1.5 使用 MySQL 5');
   break;
   case ('91'):
     define('POPUP_ERROR_HEADING','PHP版本警告');
-    define('POPUP_ERROR_TEXT','Zen Cart中文版要求PHP 5.2.14或以上版本。<br /><br />Zen Cart中文版中使用的几个PHP功能，在旧的PHP 版本中不存在或有错误。<br /><br />强烈建议升级PHP版本。');
+    define('POPUP_ERROR_TEXT','Zen Cart 中文版 v1.5.4 使用 PHP 5.3.17 到 5.6.x(可以使用 PHP 5.2.10 或更新版本，但使用旧版 PHP 较不安全)。<br /><br />Zen Cart中文版中使用的某些 PHP 功能，在旧版的 PHP 中不存在。<br /><br />建议升级PHP版本。');
   break;
   case ('92'):
     define('POPUP_ERROR_HEADING','open_basedir限制可能导致问题');
@@ -680,3 +677,10 @@ switch ($error_code) {
 
 }
 
+define('TEXT_VERSION_CHECK_NEW_VER', '有新版本 v');
+define('TEXT_VERSION_CHECK_NEW_PATCH', '有新补丁: v');
+define('TEXT_VERSION_CHECK_PATCH', '补丁');
+define('TEXT_VERSION_CHECK_DOWNLOAD', '下载地址');
+define('TEXT_VERSION_CHECK_CURRENT', '您的 Zen Cart&reg; 是最新版。');
+define('TEXT_ERROR_NEW_VERSION_AVAILABLE', '<a href="http://www.zen-cart.cn">Zen Cart&reg; 有新版本，请到</a><a href="http://www.zen-cart.cn" style="text-decoration:underline" target="_blank">www.zen-cart.cn</a>下载');
+define('LABEL_ZC_VERSION_CHECK', 'Zen Cart 版本:');

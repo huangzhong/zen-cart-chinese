@@ -3,11 +3,11 @@
  * FirstData/Linkpoint/Yourpay API Payment Module
  *
  * @package paymentMethod
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @copyright Portions Copyright 2003 Jason LeBaron
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: DrByte  Tue Aug 28 16:48:39 2012 -0400 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: Ian Wilson  Modified in v1.5.4 $
  */
   if (!defined('TABLE_LINKPOINT_API')) define('TABLE_LINKPOINT_API', DB_PREFIX . 'linkpoint_api');
   @define('MODULE_PAYMENT_LINKPOINT_API_CODE_DEBUG' ,'off'); // debug for programmer use only
@@ -15,6 +15,10 @@
 class linkpoint_api {
   var $code, $title, $description, $enabled, $payment_status, $auth_code, $transaction_id;
   var $_logDir = DIR_FS_SQL_CACHE;
+  /**
+   * this module collects card-info onsite
+   */
+  var $collectsCardDataOnsite = TRUE;
 
   // class constructor
   function linkpoint_api() {
@@ -63,10 +67,12 @@ class linkpoint_api {
 
   function update_status() {
     global $order, $db;
-    // if store is not running in SSL, cannot offer credit card module, for PCI reasons
-    if (!defined('ENABLE_SSL') || ENABLE_SSL != 'true') $this->enabled = FALSE;
+    if (IS_ADMIN_FLAG === false) {
+      // if store is not running in SSL, cannot offer credit card module, for PCI reasons
+      if (!defined('ENABLE_SSL') || ENABLE_SSL != 'true') $this->enabled = FALSE;
+    }
     // check other reasons for the module to be deactivated:
-    if ( $this->enabled && $this->zone > 0 ) {
+    if ($this->enabled && (int)$this->zone > 0 && isset($order->billing['country']['id'])) {
       $check_flag = false;
       $sql = "SELECT zone_id
               FROM " . TABLE_ZONES_TO_GEO_ZONES . "
@@ -249,18 +255,26 @@ class linkpoint_api {
   /**
    * Prepare the hidden fields comprising the parameters for the Submit button on the checkout confirmation page
    */
+  function process_button_ajax() {
+    $processButton = array('ccFields'=>array('cc_owner'=>'linkpoint_api_cc_owner',
+        'cc_cvv'=>'linkpoint_api_cc_cvv',
+        'cc_number'=>'linkpoint_api_cc_number',
+        'cc_expires_month'=>'linkpoint_api_cc_expires_month',
+        'cc_expires_year'=>'linkpoint_api_cc_expires_year'),
+        'extraFields'=>array(zen_session_name()=>zen_session_id()));
+    return $processButton;
+  }
   function process_button() {
-    // These are hidden fields on the checkout confirmation page
-    $process_button_string = zen_draw_hidden_field('cc_owner', $_POST['linkpoint_api_cc_owner']) .
-                             zen_draw_hidden_field('cc_expires', $this->cc_expiry_month . substr($this->cc_expiry_year, -2)) .
-                             zen_draw_hidden_field('cc_expires_month', $this->cc_expiry_month) .
-                             zen_draw_hidden_field('cc_expires_year', substr($this->cc_expiry_year, -2)) .
-                             zen_draw_hidden_field('cc_type', $this->cc_card_type) .
-                             zen_draw_hidden_field('cc_number', $this->cc_card_number) .
-                             zen_draw_hidden_field('cc_cvv', $_POST['linkpoint_api_cc_cvv']);
-    $process_button_string .= zen_draw_hidden_field(zen_session_name(), zen_session_id());
+        $process_button_string = zen_draw_hidden_field('cc_owner', $_POST['linkpoint_api_cc_owner']) .
+                                 zen_draw_hidden_field('cc_expires', $this->cc_expiry_month . substr($this->cc_expiry_year, -2)) .
+                                 zen_draw_hidden_field('cc_expires_month', $this->cc_expiry_month) .
+                                 zen_draw_hidden_field('cc_expires_year', substr($this->cc_expiry_year, -2)) .
+                                 zen_draw_hidden_field('cc_type', $this->cc_card_type) .
+                                 zen_draw_hidden_field('cc_number', $this->cc_card_number) .
+                                 zen_draw_hidden_field('cc_cvv', $_POST['linkpoint_api_cc_cvv']);
+        $process_button_string .= zen_draw_hidden_field(zen_session_name(), zen_session_id());
 
-    return $process_button_string;
+        return $process_button_string;
   }
 
   /**
@@ -537,7 +551,7 @@ class linkpoint_api {
                            array('fieldName'=>'cc_number', 'value' => $cc_number, 'type'=>'string'),
                            array('fieldName'=>'cust_info', 'value' => $cust_info, 'type'=>'string'),
                            array('fieldName'=>'chargetotal', 'value' => $chargetotal, 'type'=>'string'),
-                           array('fieldName'=>'cc_expire', 'value' => $cc_month . '/' . $cc_year, 'type'=>'string'),
+//                            array('fieldName'=>'cc_expire', 'value' => $cc_month . '/' . $cc_year, 'type'=>'string'),
                            array('fieldName'=>'ordertype', 'value' => $myorder['ordertype'], 'type'=>'string'), // transaction type: PREAUTH or SALE
                            array('fieldName'=>'date_added', 'value' => 'now()', 'type'=>'noquotestring'));
     if (MODULE_PAYMENT_LINKPOINT_API_STORE_DATA == 'True') {
@@ -638,7 +652,7 @@ class linkpoint_api {
      $output = '';
      $sql = "select * from " . TABLE_LINKPOINT_API . " where order_id = '" . $zf_order_id . "' and transaction_result = 'APPROVED' order by date_added";
      $lp_api = $db->Execute($sql);
-     if ($lp_api->RecordCount() > 0) require(DIR_FS_CATALOG. DIR_WS_MODULES . 'payment/linkpoint_api/linkpoint_api_admin_notification.php');
+     if (!$lp_api->EOF && $lp_api->RecordCount() > 0) require(DIR_FS_CATALOG. DIR_WS_MODULES . 'payment/linkpoint_api/linkpoint_api_admin_notification.php');
      return $output;
    }
 

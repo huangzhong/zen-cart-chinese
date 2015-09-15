@@ -1,10 +1,10 @@
 <?php
 /**
  * @package languageDefines
- * @copyright Copyright 2003-2009 Zen Cart Development Team
+ * @copyright Copyright 2003-2013 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @$Id: discount_coupon.php 14712 2009-10-28 22:05:08Z ajeh $
+ * $Id: discount_coupon.php 14712 2009-10-28 22:05:08Z ajeh $
  * @Simplified Chinese version   http://www.zen-cart.cn
  */
 
@@ -28,6 +28,8 @@ define('TEXT_COUPON_HELP_CATEGORIES', '<p class="bold">分类限制:</p>');
 define('TEXT_COUPON_HELP_PRODUCTS', '<p class="bold">商品显著:</p>');
 define('TEXT_ALLOW', '有效');
 define('TEXT_DENY', '无效');
+
+define('TEXT_NO_CAT_TOP_ONLY_DENY', '<p>本选项有特殊的产品限制。');
 define('TEXT_NO_CAT_RESTRICTIONS', '<p>本优惠券适用所有分类。</p>');
 define('TEXT_NO_PROD_RESTRICTIONS', '<p>本优惠券适用所有商品。</p>');
 define('TEXT_CAT_ALLOWED', ' (适用分类)');

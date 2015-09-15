@@ -1,11 +1,10 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: schinese.php 15621 2012-01-10 Jack $
- * @version GIT: $Id: Author: DrByte  Wed Sep 5 10:59:13 2012 -0400 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: Jack  Modified in v1.5.4 $
  */
 if (!defined('IS_ADMIN_FLAG'))
 {
@@ -19,14 +18,15 @@ define('HEADER_LOGO_HEIGHT', '50px');
 define('HEADER_LOGO_IMAGE', 'logo.gif');
 
 // look in your $PATH_LOCALE/locale directory for available locales..
-setlocale(LC_TIME, 'zh_CN.UTF-8');
+$locales = array('zh_CN', 'zh_CN.utf8', 'zh');
+@setlocale(LC_TIME, $locales);
 define('DATE_FORMAT_SHORT', '%Y/%m/%d');  // this is used for strftime()
 define('DATE_FORMAT_LONG', '%Y年 %m月 %d日'); // this is used for strftime()
 define('DATE_FORMAT', 'Y/m/d'); // this is used for date()
 define('PHP_DATE_TIME_FORMAT', 'Y/m/d H:i:s'); // this is used for date()
 define('DATE_TIME_FORMAT', DATE_FORMAT_SHORT . ' %H:%M:%S');
 define('DATE_FORMAT_SPIFFYCAL', 'yyyy/MM/dd');  //Use only 'dd', 'MM' and 'yyyy' here in any order
-
+define('ADMIN_NAV_DATE_TIME_FORMAT', '%Y-%m-%d %X'); // this is used for strftime()
 ////
 // Return date in raw format
 // $date should be in format yyyy/mm/dd
@@ -84,8 +84,7 @@ define('HEADER_TITLE_LOGOFF', '退出');
 define('MALE', '先生');
 define('FEMALE', '女士');
 
-// text for date of birth example
-define('DOB_FORMAT_STRING', 'yyyy/mm/dd');
+define('NONE', 'None');
 
 // configuration box text
 define('BOX_HEADING_CONFIGURATION', '商店设置');
@@ -114,6 +113,7 @@ define('BOX_CONFIGURATION_ALL_LISTING', '所有商品');
 define('BOX_CONFIGURATION_INDEX_LISTING', '商品索引');
 define('BOX_CONFIGURATION_DEFINE_PAGE_STATUS', '定义页面');
 define('BOX_CONFIGURATION_EZPAGES_SETTINGS', '简易页面设置');
+define('BOX_CONFIGURATION_EASY_POPULATE', '批量商品管理');
 
 // modules box text
 define('BOX_HEADING_MODULES', '模块管理');
@@ -178,6 +178,7 @@ define('BOX_TOOLS_STORE_MANAGER', '商店管理');
 define('BOX_TOOLS_DEVELOPERS_TOOL_KIT', '开发工具');
 define('BOX_TOOLS_SQLPATCH', '安装SQL脚本');
 define('BOX_TOOLS_EZPAGES', '简易页面管理');
+define('BOX_TOOLS_EASY_POPULATE', '批量商品管理');
 
 define('BOX_HEADING_EXTRAS', '其他');
 
@@ -577,6 +578,7 @@ define('TEXT_LEGEND_STATUS_ON', '开启状态');
 define('TEXT_INFO_MASTER_CATEGORIES_ID', '<strong>备注: 主分类用于定价，分类影响链接商品的价格。例如促销</strong>');
 define('TEXT_YES', '是');
 define('TEXT_NO', '否');
+define('TEXT_CANCEL', '取消');
 
 // shipping error messages
 define('ERROR_SHIPPING_CONFIGURATION', '<strong>配送参数设置错误!</strong>');
@@ -610,7 +612,7 @@ define('TEXT_INFO_SET_MASTER_CATEGORIES_ID_WARNING', '<strong>警告:</strong> �
 define('PRODUCTS_PRICE_IS_CALL_FOR_PRICE_TEXT', '价格面议');
 define('PRODUCTS_PRICE_IS_FREE_TEXT','免费商品');
 
-define('TEXT_PRODUCT_WEIGHT_UNIT','克');
+define('TEXT_PRODUCT_WEIGHT_UNIT','磅');
 
 // min, max, units
 define('PRODUCTS_QUANTITY_MAX_TEXT_LISTING', '最多:');
@@ -624,8 +626,8 @@ define('PRODUCTS_QUANTITY_MAX_TEXT_LISTING', '最多:');
 
 // Rich Text / HTML resources
 define('TEXT_HTML_EDITOR_NOT_DEFINED','如果您没有定义HTML编辑器或者JavaScript关闭了, 可以手工输入原HTML文本.');
-define('TEXT_WARNING_HTML_DISABLED','<span class = "main">备注: 您正使用文本格式的电子邮件. 如果你希望使用HTML格式, 需要在电子邮件选项下打开 "使用 MIME HTML" </span>');
-define('TEXT_WARNING_CANT_DISPLAY_HTML','<span class = "main">备注: 您正使用文本格式的电子邮件. 如果你希望使用HTML格式, 需要在电子邮件选项下打开 "使用 MIME HTML" </span>');
+define('TEXT_WARNING_HTML_DISABLED','<span class = "main">备注: 您正使用文本格式的电子邮件. 如果你希望使用HTML格式, 需要在电子邮件选项下打开 "使用 HTML 邮件" </span>');
+define('TEXT_WARNING_CANT_DISPLAY_HTML','<span class = "main">备注: 您正使用文本格式的电子邮件. 如果你希望使用HTML格式, 需要在电子邮件选项下打开 "使用 HTML 邮件" </span>');
 define('TEXT_EMAIL_CLIENT_CANT_DISPLAY_HTML',"如果您看到这个信息，是因为我们发给您的电子邮件是HTML格式，但您的电子邮件阅读程序无法显示HTML信息.");
 define('ENTRY_EMAIL_PREFERENCE','电子邮件格式选择:');
 define('ENTRY_EMAIL_FORMAT_COMMENTS','选择 "无" 或 "退出" 关闭所有邮件, 包括订单详情');
@@ -702,6 +704,13 @@ define('ENTRY_NOTHING_TO_SEND','您还没有输入任何内容');
   define('WARNING_ADMIN_ACTIVITY_LOG_DATE', '提示: 系统管理日志数据表中的记录已超过2个月，请尽快存档以节省空间 ... ');
   define('WARNING_ADMIN_ACTIVITY_LOG_RECORDS', '提示: 系统管理日志数据表中的记录已超过5万个，请尽快存档以节省空间 ... ');
   define('RESET_ADMIN_ACTIVITY_LOG', '进入工具－商店管理，保存并清理管理日志');
+  define('TEXT_ACTIVITY_LOG_ACCESSED', '管理员操作日志访问。输出格式: %s. Filter: %s. %s');
+  define('TEXT_ERROR_FAILED_ADMIN_LOGIN_FOR_USER', '管理员登录失败: ');
+  define('TEXT_ERROR_ATTEMPTED_TO_LOG_IN_TO_LOCKED_ACCOUNT', '登录锁定账号:');
+  define('TEXT_ERROR_ATTEMPTED_ADMIN_LOGIN_WITHOUT_CSRF_TOKEN', '未填写 CSRF 码的登录。');
+  define('TEXT_ERROR_ATTEMPTED_ADMIN_LOGIN_WITHOUT_USERNAME', '未填写用户名的登录。');
+  define('TEXT_ERROR_INCORRECT_PASSWORD_DURING_RESET_FOR_USER', '重置密码时密码不正确: ');
+
 
   define('CATEGORY_HAS_SUBCATEGORIES', '说明: 本分类中已有子分类，不能添加商品');
 
@@ -718,6 +727,9 @@ define('TEXT_EMAIL', '邮件地址');
 define('TEXT_NOEMAIL', '无邮件地址');
 
 define('BOX_HEADING_PRODUCT_TYPES', '商品类型');
+
+define('ERROR_DATABASE_MAINTENANCE_NEEDED', '<a href="http://www.zen-cart.com/content.php?334-ERROR-0071-There-appears-to-be-a-problem-with-the-database-Maintenance-is-required" target="_blank">ERROR 0071: 数据库错误，需要维护。</a>');
+
 
 ///////////////////////////////////////////////////////////
 // include additional files:

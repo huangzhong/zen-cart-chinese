@@ -3,10 +3,10 @@
  * ez_pages ("page") header_php.php
  *
  * @package page
- * @copyright Copyright 2003-2006 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: header_php.php 4881 2006-11-04 17:51:31Z ajeh $
+ * @version GIT: $Id: Author: DrByte  Modified in v1.5.4 $
  * @modified from standard file to provide multi-language support
  */
 /*
@@ -151,9 +151,6 @@ define('HEADING_TITLE', $var_pageDetails->fields['pages_title']);
 $breadcrumb->add($var_pageDetails->fields['pages_title']);
 
 require(DIR_WS_MODULES . zen_get_module_directory('require_languages.php'));
-
-$breadcrumb->add($var_pageDetails->fields['pages_title']);
-
 
 
 // Pull settings from admin switches to determine what, if any, header/column/footer "disable" options need to be set

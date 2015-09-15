@@ -1,10 +1,10 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: DrByte  Tue Aug 28 17:40:54 2012 -0400 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: DrByte  Jun 30 2014 Modified in v1.5.4 $
  */
 
   require('includes/application_top.php');
@@ -71,10 +71,8 @@
                         set configuration_value = '" . zen_db_input($value) . "'
                         where configuration_key = '" . zen_db_input($key) . "'");
         }
-        $configuration_query = 'select configuration_key as cfgkey, configuration_value as cfgvalue
-                                from ' . TABLE_CONFIGURATION;
-        $configuration = $db->Execute($configuration_query);
         $msg = sprintf(TEXT_EMAIL_MESSAGE_ADMIN_SETTINGS_CHANGED, preg_replace('/[^\d\w]/', '*', $_GET['module']), $admname);
+        zen_record_admin_activity($msg, 'warning');
         zen_mail(STORE_OWNER_EMAIL_ADDRESS, STORE_OWNER_EMAIL_ADDRESS, TEXT_EMAIL_SUBJECT_ADMIN_SETTINGS_CHANGED, $msg, STORE_NAME, EMAIL_FROM, array('EMAIL_MESSAGE_HTML'=>$msg), 'admin_settings_changed');
         zen_redirect(zen_href_link(FILENAME_MODULES, 'set=' . $set . ($_GET['module'] != '' ? '&module=' . $_GET['module'] : ''), 'NONSSL'));
         break;
@@ -83,12 +81,10 @@
         $class = basename($_POST['module']);
         if (!$is_ssl_protected && in_array($class, array('paypaldp', 'linkpoint_api', 'authorizenet_aim', 'authorizenet_echeck'))) break;
         if (file_exists($module_directory . $class . $file_extension)) {
-          $configuration_query = 'select configuration_key as cfgkey, configuration_value as cfgvalue
-                                  from ' . TABLE_CONFIGURATION;
-          $configuration = $db->Execute($configuration_query);
           include($module_directory . $class . $file_extension);
           $module = new $class;
           $msg = sprintf(TEXT_EMAIL_MESSAGE_ADMIN_MODULE_INSTALLED, preg_replace('/[^\d\w]/', '*', $_POST['module']), $admname);
+          zen_record_admin_activity($msg, 'warning');
           zen_mail(STORE_OWNER_EMAIL_ADDRESS, STORE_OWNER_EMAIL_ADDRESS, TEXT_EMAIL_SUBJECT_ADMIN_SETTINGS_CHANGED, $msg, STORE_NAME, EMAIL_FROM, array('EMAIL_MESSAGE_HTML'=>$msg), 'admin_settings_changed');
           $result = $module->install();
         }
@@ -100,12 +96,10 @@
         $file_extension = substr($PHP_SELF, strrpos($PHP_SELF, '.'));
         $class = basename($_POST['module']);
         if (file_exists($module_directory . $class . $file_extension)) {
-          $configuration_query = 'select configuration_key as cfgkey, configuration_value as cfgvalue
-                                  from ' . TABLE_CONFIGURATION;
-          $configuration = $db->Execute($configuration_query);
           include($module_directory . $class . $file_extension);
           $module = new $class;
           $msg = sprintf(TEXT_EMAIL_MESSAGE_ADMIN_MODULE_REMOVED, preg_replace('/[^\d\w]/', '*', $_POST['module']), $admname);
+          zen_record_admin_activity($msg, 'warning');
           zen_mail(STORE_OWNER_EMAIL_ADDRESS, STORE_OWNER_EMAIL_ADDRESS, TEXT_EMAIL_SUBJECT_ADMIN_SETTINGS_CHANGED, $msg, STORE_NAME, EMAIL_FROM, array('EMAIL_MESSAGE_HTML'=>$msg), 'admin_settings_changed');
           $result = $module->remove();
         }
@@ -196,7 +190,7 @@
         $module = new $class;
         if ($module->check() > 0) {
           if ($module->sort_order > 0) {
-            if ($installed_modules[$module->sort_order] != '') {
+            if (isset($installed_modules[$module->sort_order]) && $installed_modules[$module->sort_order] != '') {
               $zc_valid = false;
             }
             $installed_modules[$module->sort_order] = $file;
@@ -216,12 +210,13 @@
                                           configuration_description, use_function, set_function
                                           from " . TABLE_CONFIGURATION . "
                                           where configuration_key = '" . zen_db_input($module_keys[$j]) . "'");
-
-            $keys_extra[$module_keys[$j]]['title'] = $key_value->fields['configuration_title'];
-            $keys_extra[$module_keys[$j]]['value'] = $key_value->fields['configuration_value'];
-            $keys_extra[$module_keys[$j]]['description'] = $key_value->fields['configuration_description'];
-            $keys_extra[$module_keys[$j]]['use_function'] = $key_value->fields['use_function'];
-            $keys_extra[$module_keys[$j]]['set_function'] = $key_value->fields['set_function'];
+            if (!$key_value->EOF){
+              $keys_extra[$module_keys[$j]]['title'] = $key_value->fields['configuration_title'];
+              $keys_extra[$module_keys[$j]]['value'] = $key_value->fields['configuration_value'];
+              $keys_extra[$module_keys[$j]]['description'] = $key_value->fields['configuration_description'];
+              $keys_extra[$module_keys[$j]]['use_function'] = $key_value->fields['use_function'];
+              $keys_extra[$module_keys[$j]]['set_function'] = $key_value->fields['set_function'];
+            }
           }
           $module_info['keys'] = $keys_extra;
           $mInfo = new objectInfo($module_info);
@@ -295,7 +290,7 @@
   $heading = array();
   $contents = array();
   switch ($action) {
-  	case 'remove':
+    case 'remove':
       $heading[] = array('text' => '<b>' . $mInfo->title . '</b>');
 
       $contents = array('form' => zen_draw_form('module_delete', FILENAME_MODULES, '&action=removeconfirm'));

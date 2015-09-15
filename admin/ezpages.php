@@ -1,18 +1,20 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: ezpages.php (Multilingual) 2006-10-14 fweb (original bybunyip) $
+ * @version GIT: $Id: Author: DrByte  Jun 30 2014 Modified in v1.5.4 $
  */
 
 // Sets the status of a page
   function zen_set_ezpage_status($pages_id, $status, $status_field) {
   global $db;
     if ($status == '1') {
+      zen_record_admin_activity('EZ-Page ID ' . (int)$pages_id . ' [' . $status_field . '] changed to 0', 'info');
       return $db->Execute("update " . TABLE_EZPAGES . " set " . zen_db_input($status_field) . " = '0'  where pages_id = '" . (int)$pages_id . "'");
     } elseif ($status == '0') {
+      zen_record_admin_activity('EZ-Page ID ' . (int)$pages_id . ' [' . $status_field . '] changed to 1', 'info');
       return $db->Execute("update " . TABLE_EZPAGES . " set " . zen_db_input($status_field) . " = '1'  where pages_id = '" . (int)$pages_id . "'");
     } else {
       return -1;
@@ -178,6 +180,7 @@
 			  zen_db_perform(TABLE_EZPAGES_TEXT, $sql_data_array);
 			}		
             $messageStack->add(SUCCESS_PAGE_INSERTED, 'success');
+            zen_record_admin_activity('EZ-Page with ID ' . (int)$pages_id . ' added.', 'info');
           } elseif ($action == 'update') {
             zen_db_perform(TABLE_EZPAGES, $sql_data_array, 'update', "pages_id = '" . (int)$pages_id . "'");
 			$languages = zen_get_languages();
@@ -191,6 +194,7 @@
 			  zen_db_perform(TABLE_EZPAGES_TEXT, $sql_data_array, 'update', "pages_id = '" . (int)$pages_id . "' and languages_id = '" . $language_id . "'");
 			}		
             $messageStack->add(SUCCESS_PAGE_UPDATED, 'success');
+            zen_record_admin_activity('EZ-Page with ID ' . (int)$pages_id . ' updated.', 'info');
           }
 // end modification for multi-language support
 
@@ -214,6 +218,7 @@
         $db->Execute("delete from " . TABLE_EZPAGES_TEXT . " where pages_id = '" . (int)$pages_id . "'");
         
         $messageStack->add(SUCCESS_PAGE_REMOVED, 'success');
+        zen_record_admin_activity('EZ-Page with ID ' . (int)$pages_id . ' deleted.', 'notice');
         zen_redirect(zen_href_link(FILENAME_EZPAGES_ADMIN, 'page=' . $_GET['page']));
         break;
     }

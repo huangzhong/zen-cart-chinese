@@ -12,7 +12,7 @@
 // if no active banner in the specified banner group then the box will not show
   if ($banner = zen_banner_exists('dynamic', $banner_box_group)) {
     $content .= '<div id="' . str_replace('_', '-', $box_id . 'Content') . '" class="sideBoxContent centeredContent">';
-    $content .= '<img src="https://www.paypal.com/en_US/Marketing/i/banner/bnr_accept_120x30_y.gif" border="0" alt="PayPal icon">';
+    $content .= zen_display_banner('static', $banner);
     $content .= '</div>';
   }
 

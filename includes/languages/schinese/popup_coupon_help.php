@@ -1,10 +1,10 @@
 <?php
 /**
  * @package languageDefines
- * @copyright Copyright 2003-2009 Zen Cart Development Team
+ * @copyright Copyright 2003-2013 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: popup_coupon_help.php 14141 2009-08-10 19:34:47Z wilt $
+ * @version GIT: $Id: Author: Jack Modified in v1.5.4 $
  */
 
 define('HEADING_COUPON_HELP', '优惠券帮助');
@@ -25,6 +25,7 @@ define('TEXT_DENY', '禁止');
 define('TEXT_ALLOWED', ' (允许)');
 define('TEXT_DENIED', ' (禁止)');
 
+define('TEXT_NO_CAT_TOP_ONLY_DENY', '<p>本优惠券有特殊的产品限制。');
 define('TEXT_NO_CAT_RESTRICTIONS', '<p>本优惠券适用所有分类。</p>');
 define('TEXT_NO_PROD_RESTRICTIONS', '<p>本优惠券适用所有商品。</p>');
 
@@ -32,4 +33,3 @@ define('TEXT_NO_PROD_RESTRICTIONS', '<p>本优惠券适用所有商品。</p>');
 define('TEXT_COUPON_GV_RESTRICTION','优惠券不能用在购买 ' . TEXT_GV_NAMES . '.');
 
 define('TEXT_COUPON_GV_RESTRICTION_ZONES', '帐单地址有限制。');
-?>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--
+/**
+ * @package documentation
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
+ * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
+ * @version GIT: $Id: Author: DrByte  Dec 12 2014  New in v1.5.4 $
+ */
+//-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+body, table{ font-family:Verdana, Arial, Helvetica, sans-serif; font-size:14px; }
+fieldset.intro {border-color:#C96E29; }
+.intro{background-color:#EEEEEE; border-color:#5778ce; font-size:14px; }
+td.plainbox, div.callout {border: 1px dashed;border-color: #C96E29;margin:5px 40px 5px 40px;}
+.heading {background-color:#5778CE; font-weight:bold; font-size:14px; width: 100%; }
+.title1 {color:#C96E29; font-weight:bold; font-size:22px; }
+.title2 {color:#C96E29; font-weight:bold; font-size:13px; }
+.small {font-size:10px ;}
+.error {color:#FF0000; }
+.filename {font-family: mono, "Courier New", Courier ; font-size:14px; color:#c96e29;}
+.pseudolink {text-decoration:underline; color:#5778CE;}
+h1.intro { color: #ffffff; border:1px solid #aca893; background-color: #c96e29;  font-size: 22px;   padding: 4px;}
+h1 { color: #ffffff;    border:1px solid #aca893;   background-color: #5778ce;   font-size: 20px;   padding: 4px;}
+h2 { color: #c96e29;  font-size: 18px;}
+h3 { color: #5778ce;  font-size: 16px; margin-bottom:0px;}
+h4 { color: #c96e29;  font-size: 14px;}
+h5 { color: #5778ce;  font-size: 16px; margin-bottom:0px; margin-top:0px; }
+.style1 {
+  font-size: 18px;
+  font-weight: bold;
+}
+.emphasize {
+  color: #336600;
+}
+fieldset {max-width: 748px; margin: auto}
+.center {text-align: center}
+
+
+-->
+</style>
+<title>Zen Cart 中文版 v1.5.4 新增功能</title>
+<meta http-equiv="imagetoolbar" content="no">
+<meta name="author" content="The Zen Cart&reg; Team">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+
+<fieldset class="intro">
+<h1 class="intro" style="text-align: center;">欢迎使用 Zen Cart 中文版</h1>
+<br>
+Zen Cart&trade;软件使用的是GNU通用公共许可协议，您可以免费使用、修改Zen Cart&trade;软件。
+<br>
+<br>
+虽然该软件是免费的，但是欢迎您每次下载新版本前捐款，以帮助我们继续软件开发、升级和维护免费论坛。
+<br>
+<br>
+捐款网址:
+<a href="http://www.zen-cart.com/donate" target="_blank">The Zen Cart&reg; 团队</a>
+<br>
+<br>
+感谢您的支持<br>
+<em>The Zen Cart&reg; 团队</em><br>
+<br>
+
+<p class="small center">
+Zen Cart&reg; 源自: : Copyright  2003 osCommerce<br>
+该软件希望提供有用的功能，但[不做保证]，也不保证[适用于特定用途]<br>
+该软件受限于GNU通用公共许可协议<br><br>
+</p>
+</fieldset>
+
+<br>
+<fieldset>
+<p class="center"><img src="osi-certified-120x100.png" alt="O S I Certified"><br>
+该软件通过OSI开源软件认证。<br>
+OSI Certified是开源动力的认证标志。
+</p>
+</fieldset>
+<br>
+
+<fieldset>
+<h1>关于 PHP 版本</h1>
+<p>Zen Cart&reg; v1.5.4 兼容 PHP 5.2.10 到 PHP 5.6，以及 MySQL 5.1 到 5.6</p>
+<p class="small"><em>(说明: 使用 PHP 5.3.7 或以上版本更安全。)</em></p>
+<p class="small"><em>(说明: PHP 5.2.x 和 PHP 5.3.x 是旧版且 www.php.net 不再支持... 请尽可能使用 PHP 5.5，更安全且更快。)</em></p>
+
+<h1>升级说明</h1>
+本文仅列出 1.5.4 的改进，如果您需要针对 1.5.2 和 1.5.3 的改进，参见<a href="whatsnew_1.5.2.html" target="_blank">whatsnew_1.5.2.html</a> 和 <a href="whatsnew_1.5.3.html" target="_blank">whatsnew_1.5.3.html</a>。</p>
+<h2>从 v1.5.3 升级</h2>
+<p>Simple: if you are using v1.5.3 already and have not customized any of the files listed in the changed_files-v1-5-4.html document, then simply replace those files with the new files as listed.</p>
+<p>If you HAVE customized or altered certain files, simply re-do your customizations in the new version of those particular files by making the same changes needed.</p>
+<p>If you are using Addons/Plugins that have made alterations to those files, it is best to compare those changed files against the original Zen Cart files for the version those plugins were built for, and see what changes were there ... and then re-build those changes in the v1.5.4 file.</p>
+<h2>从 v1.5.2 或之前版本升级到 v1.5.4</h2>
+<p>如果您从比 v1.5.3 更旧的版本升级，请执行<a href="http://www.zen-cart.com/upgrades">完整的网站升级</a>。</p>
+
+<h1>修改日志 - 修改文件列表</h1>
+<p>自v1.5.3 后的修改文件的列表，见<a href="changed_files-v1-5-4.html" target="_blank">changed_files-v1-5-4.html</a>。</p>
+
+<h1>新增功能 ... 从 v1.5.3 到 v1.5.4</h1>
+<h3><strong>下面是从 v1.5.3 到 v1.5.4 所做的改进和修复: </strong></h3>
+改进:
+<ul>
+<li>CHANGE-714 - Add progressive-enhancement to checkout flow for PCI compliance when card details collected onsite (added ajax infrastructure, and jQuery)</li>
+<li>CHANGE-724 - Fix init_cache_key_check.php redirect loop which occurred when the user deletes the /cache/ folder</li>
+<li>CHANGE-423 - PayPal Express Checkout - recover funding failure (10486) with "retry" if card is declined</li>
+<li>CHANGE-725 - Authorizenet SIM module now hashes x_currency_code</li>
+<li>CHANGE-730 - Linkpoint CURL SSL bug triggers PHP Warning: Illegal string offset</li>
+<li>CHANGE-731 - Update Authorize.net SIM and AIM to add support for AUD,NZD currencies (now supports USD CAD GBP EUR AUD NZD)</li>
+<li>CHANGE-732 - Update Authorize.net SIM and AIM to set defaults for merchant accounts capable of doing POS and Web transactions in one account</li>
+<li>CHANGE-733 - Store-pickup module not activating properly for zone restrictions</li>
+<li>CHANGE-311 - Data sanity check in admin/customers.php</li>
+<li>CHANGE-709 - Refactor logging infrastructure</li>
+<li>CHANGE-735 - Fix CSRF in admin profiles for action=delete</li>
+<li>CHANGE-736 - Fix CSRF in layout_controllers for action=reset_defaults</li>
+<li>CHANGE-737 - Replace hard-coded language text in /admin/orders.php</li>
+<li>Fix #136 - Error in html syntax in admin_activity and CSS comment syntax in who's online</li>
+<li>Fix #152 - Page not found when incorrect EZPage link remove status</li>
+<li>Fix #188 - Remove code comment causing false-positive in security scan</li>
+<li>Fix #209 - POODLE protection - Remove SSLv3 mode, to allow autonegotiation</li>
+<li>Fix #210 - Fix code dealing with apostrophes in filenames</li>
+<li>Fix #215 - Added additional common destinations to curltester script</li>
+<li>Fix #221 - Fix Discount Coupon and Shipping Cost</li>
+<li>Fix #246 - Fix errors about passwords during zc_install upgrade</li>
+<li>ISSUE-82 - (continuation of) Fix odd PHP quirk which triggers fatal error "Allowed memory size of --- bytes exhausted" when accessing SID constant</li>
+<li>Optimizations and improvements to various database queries</li>
+<li>Fix queries in class.phpbb.php</li>
+<li>Fix fmod_round and shopping_cart using (int) on quantity</li>
+<li>Backported a PHP 5.4 fix to attributes_controller</li>
+<li>zc_install - Fix email validation in zc_install to allow for new domain name TLDs</li>
+<li>Fix override of mexico addresses with paypal pro</li>
+<li>Substitute gethostname for shell_exec since some hosts disable shell_exec</li>
+ 
+</ul>
+
+
+</fieldset>
+<br><br>
+<p class="center"><em>版权所有 2004 - 2015 Zen Cart&reg; 中文版 www.zen-cart.cn</em></p>
+<br><br>
+</body>
+</html>

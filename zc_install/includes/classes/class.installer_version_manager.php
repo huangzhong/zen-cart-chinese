@@ -5,10 +5,10 @@
  * This class is used during the installation and upgrade processes
  * @package Installer
  * @access private
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: DrByte  Tue Aug 28 17:13:32 2012 -0400 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: DrByte  Thu Apr 24 13:48:29 2014 -0400 Modified in v1.5.4 $
  */
 
 
@@ -29,7 +29,7 @@
       /**
        * The version that this edition of the installer is designed to support
        */
-      $this->latest_version = '1.5.1';
+      $this->latest_version = '1.5.4';
 
       /**
        * Check to see if the configuration table can be found...thus validating the installation, in part.
@@ -78,30 +78,36 @@
       $this->version139 = $this->check_version_139();
       $this->version150 = $this->check_version_150();
       $this->version151 = $this->check_version_151();
+      $this->version152 = $this->check_version_152();
+      $this->version153 = $this->check_version_153();
+      $this->version154 = $this->check_version_154();
 
-        if ($this->version110 == true)  $retVal = '1.1.0';
-        if ($this->version111 == true)  $retVal = '1.1.1';
-        if ($this->version112 == true)  $retVal = '1.1.2 or 1.1.3';
-        if ($this->version114 == true)  $retVal = '1.1.4';
-        if ($this->version1141 == true) $retVal = '1.1.4-patch1';
-        if ($this->version120 == true)  $retVal = '1.2.0';
-        if ($this->version121 == true)  $retVal = '1.2.1';
-        if ($this->version122 == true)  $retVal = '1.2.2';
-        if ($this->version123 == true)  $retVal = '1.2.3';
-        if ($this->version124 == true)  $retVal = '1.2.4';
-        if ($this->version125 == true)  $retVal = '1.2.5';
-        if ($this->version126 == true)  $retVal = '1.2.6';
-        if ($this->version127 == true)  $retVal = '1.2.7';
-        if ($this->version130 == true)  $retVal = '1.3.0';
-        if ($this->version1301 == true) $retVal = '1.3.0.1';
-        if ($this->version1302 == true) $retVal = '1.3.0.2';
-        if ($this->version135 == true) $retVal = '1.3.5';
-        if ($this->version136 == true) $retVal = '1.3.6';
-        if ($this->version137 == true) $retVal = '1.3.7';
-        if ($this->version138 == true) $retVal = '1.3.8';
-        if ($this->version139 == true) $retVal = '1.3.9';
-        if ($this->version150 == true) $retVal = '1.5.0';
-        if ($this->version151 == true) $retVal = '1.5.1';
+      if ($this->version110 == true)  $retVal = '1.1.0';
+      if ($this->version111 == true)  $retVal = '1.1.1';
+      if ($this->version112 == true)  $retVal = '1.1.2 or 1.1.3';
+      if ($this->version114 == true)  $retVal = '1.1.4';
+      if ($this->version1141 == true) $retVal = '1.1.4-patch1';
+      if ($this->version120 == true)  $retVal = '1.2.0';
+      if ($this->version121 == true)  $retVal = '1.2.1';
+      if ($this->version122 == true)  $retVal = '1.2.2';
+      if ($this->version123 == true)  $retVal = '1.2.3';
+      if ($this->version124 == true)  $retVal = '1.2.4';
+      if ($this->version125 == true)  $retVal = '1.2.5';
+      if ($this->version126 == true)  $retVal = '1.2.6';
+      if ($this->version127 == true)  $retVal = '1.2.7';
+      if ($this->version130 == true)  $retVal = '1.3.0';
+      if ($this->version1301 == true) $retVal = '1.3.0.1';
+      if ($this->version1302 == true) $retVal = '1.3.0.2';
+      if ($this->version135 == true) $retVal = '1.3.5';
+      if ($this->version136 == true) $retVal = '1.3.6';
+      if ($this->version137 == true) $retVal = '1.3.7';
+      if ($this->version138 == true) $retVal = '1.3.8';
+      if ($this->version139 == true) $retVal = '1.3.9';
+      if ($this->version150 == true) $retVal = '1.5.0';
+      if ($this->version151 == true) $retVal = '1.5.1';
+      if ($this->version152 == true) $retVal = '1.5.2';
+      if ($this->version153 == true) $retVal = '1.5.3';
+      if ($this->version154 == true) $retVal = '1.5.4';
 
       return $retVal;
     }
@@ -763,7 +769,7 @@
       // evaluate all 1.5.0 checks
       if ($got_v1_5_0a && $got_v1_5_0b ) {
         $got_v1_5_0 = true;
-        if (ZC_UPG_DEBUG==true) echo 'Got 1.5.0<br><br>';
+        if (ZC_UPG_DEBUG==true) echo '已有 1.5.0<br><br>';
       }
       return $got_v1_5_0;
     } //end of 1.5.0 check
@@ -778,12 +784,72 @@
         if (ZC_UPG_DEBUG==true) echo "151-fields-'ip_address TEST: '" . $result->fields['Field'] . '->' . $result->fields['Type'] . '<br>';
         if  ($result->fields['Field'] == 'ip_address' && strtoupper($result->fields['Type']) == 'VARCHAR(45)') {
           $got_v1_5_1 = true;
-          if (ZC_UPG_DEBUG==true) echo 'Got 1.5.1<br><br>';
+          if (ZC_UPG_DEBUG==true) echo '已有 1.5.1<br><br>';
         }
         $result->MoveNext();
       }
       return $got_v1_5_1;
     } //end of 1.5.1 check
+
+
+    function check_version_152() {
+      global $db_test;
+      $got_v1_5_2a = $got_v1_5_2b = false;
+      $sql = "show fields from " . DB_PREFIX . "sessions";
+      $result = $db_test->Execute($sql);
+      while (!$result->EOF && !$got_v1_5_2a) {
+        if (ZC_UPG_DEBUG==true && $result->fields['Field'] == 'sesskey') echo "152a-fields-'sesskey TEST: '" . $result->fields['Field'] . '->' . $result->fields['Type'] . ' (expecting VARCHAR(255))<br>';
+        if  ($result->fields['Field'] == 'sesskey' && strtoupper($result->fields['Type']) == 'VARCHAR(255)') {
+          $got_v1_5_2a = true;
+          if (ZC_UPG_DEBUG==true) echo 'OKAY 1.5.2a<br><br>';
+        }
+        $result->MoveNext();
+      }
+      $sql = "select configuration_description from " . DB_PREFIX . "configuration where configuration_key = 'SESSION_WRITE_DIRECTORY'";
+      $result = $db_test->Execute($sql);
+      if (ZC_UPG_DEBUG==true) echo "152b-configdesc_check SESSION_WRITE_DIRECTORY =" . $result->fields['configuration_description'] . '<br>';
+      if  ($result->fields['configuration_description'] == '指向 configure.php 文件中 DIR_FS_SQL_CACHE 设定的目录。') {
+        $got_v1_5_2b = true;
+        if (ZC_UPG_DEBUG==true) echo 'OKAY: 1.5.2b<br><br>';
+      }
+      if (ZC_UPG_DEBUG==true && !$got_v1_5_2b) echo 'BAD: 1.5.2b<br><br>';
+
+      return ($got_v1_5_2a && $got_v1_5_2b);
+    } //end of 1.5.2 check
+
+
+    function check_version_153() {
+      global $db_test;
+      $got_v1_5_3a = false;
+      $sql = "show fields from " . DB_PREFIX . "customers";
+      $result = $db_test->Execute($sql);
+      while (!$result->EOF && !$got_v1_5_3a) {
+        if (ZC_UPG_DEBUG==true && $result->fields['Field'] == 'customers_password') echo "153a-fields-'customers_password TEST: '" . $result->fields['Field'] . '->' . $result->fields['Type'] . ' (expecting VARCHAR(255))<br>';
+        if  ($result->fields['Field'] == 'customers_password' && strtoupper($result->fields['Type']) == 'VARCHAR(255)') {
+          $got_v1_5_3a = true;
+          if (ZC_UPG_DEBUG==true) echo 'OKAY 1.5.3a<br><br>';
+        }
+        $result->MoveNext();
+      }
+      if (ZC_UPG_DEBUG==true && !$got_v1_5_3a) echo 'BAD: 1.5.3a<br><br>';
+
+      return $got_v1_5_3a;
+    } //end of 1.5.3 check
+
+
+    function check_version_154() {
+      global $db_test;
+      $got_v1_5_4a = false;
+      $sql = "select configuration_title from " . DB_PREFIX . "configuration where configuration_key = 'PADSS_AJAX_CHECKOUT'";
+      $result = $db_test->Execute($sql);
+      if (ZC_UPG_DEBUG==true) echo "154a-configtitle_check PADSS_AJAX_CHECKOUT =" . $result->fields['configuration_title'] . '<br>';
+      if (!$result->EOF && $result->fields['configuration_title'] == 'PA-DSS Ajax Checkout?') {
+        $got_v1_5_4a = true;
+      }
+      if (ZC_UPG_DEBUG==true && !$got_v1_5_4a) echo 'BAD: 1.5.4a<br><br>';
+
+      return $got_v1_5_4a;
+    } //end of 1.5.4 check
 
 
 

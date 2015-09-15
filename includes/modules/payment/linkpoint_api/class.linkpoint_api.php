@@ -1,9 +1,9 @@
 <?php
 /**
  * @package paymentMethod
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Copyright 2003 LinkPoint International, Inc. All Rights Reserved.
- * @version GIT: $Id: Author: Ian Wilson  Tue Aug 14 14:56:11 2012 +0100 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: DrByte  Aug 25 2014 Modified in v1.5.4 $
  */
 /* lphp.php  LINKPOINT PHP MODULE */
 
@@ -253,7 +253,7 @@ class lphp
 					if ($this->debugging)
 						$result = exec ("$cpath -v -d \"$xml\" -E $key  -k $host", $retarr, $retnum);
 					else
-						$result = exec ("$cpath -d \"$xml\" -E $key  -k $host", $retarr, $retnum);
+						$result = exec ("$cpath -d \"$xml\" -E $key $host", $retarr, $retnum);
 				}
 
 				else	//*nix string
@@ -261,7 +261,7 @@ class lphp
 					if ($this->debugging)
           $result = exec ("'$cpath' $args -v -k -E '$key' -d '$xml' '$host'", $retarr, $retnum);
 					else
-          $result = exec ("'$cpath' $args -v -k -E '$key' -d '$xml' '$host'", $retarr, $retnum);
+          $result = exec ("'$cpath' $args -v -E '$key' -d '$xml' '$host'", $retarr, $retnum);
 				}
 
 				# EVALUATE RESPONSE #
@@ -304,10 +304,6 @@ class lphp
 			curl_setopt ($ch, CURLOPT_POST, 1);
 			curl_setopt ($ch, CURLOPT_POSTFIELDS, $xml);
 			curl_setopt ($ch, CURLOPT_SSLCERT, $key);
-      curl_setopt ($ch, CURLOPT_CAINFO, $key);
-      curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, false);
-      curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
-      curl_setopt ($ch, CURLOPT_SSLVERSION, 3);
 			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
 
 

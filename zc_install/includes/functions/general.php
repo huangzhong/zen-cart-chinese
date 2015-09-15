@@ -3,13 +3,17 @@
  * general functions used by the installer
  * @package Installer
  * @access private
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: Ian Wilson  Tue Aug 14 14:56:11 2012 +0100 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: Ian Wilson  Modified in v1.5.4 $
  */
 
   if (!defined('TABLE_UPGRADE_EXCEPTIONS')) define('TABLE_UPGRADE_EXCEPTIONS','upgrade_exceptions');
+
+  define('DIR_FS_CATALOG', zen_read_config_value('DIR_FS_CATALOG', FALSE));
+  define('DIR_WS_CLASSES', 'includes/classes/');
+  require (realpath(dirname(__FILE__)) . '/../../../includes/classes/class.zcPassword.php');
 
   function zen_not_null($value) {
     if (is_array($value)) {
@@ -41,7 +45,8 @@
 
 ////
   function zen_db_input($string) {
-    return addslashes($string);
+    global $db;
+    return $db->prepareInput($string);
   }
 
 ////
@@ -78,7 +83,6 @@ function setSelected($input, $selected) {
 function executeSql($sql_file, $database, $table_prefix = '', $isupgrade=false) {
   $debug=false;
   if (!defined('DB_PREFIX')) define('DB_PREFIX', $table_prefix);
-//	  echo 'start SQL execute';
   global $db;
 
   $ignored_count=0;
@@ -277,7 +281,8 @@ function executeSql($sql_file, $database, $table_prefix = '', $isupgrade=false) 
           case (substr($line_upper, 0, 11) == 'DROP INDEX '):
             // check to see if DROP INDEX command may be safely executed
             if ($result=zen_drop_index_command($param)) {
-              zen_write_to_upgrade_exceptions_table($line, $result, $sql_file);
+// ignore alerting about non-existing indexes to drop
+//               zen_write_to_upgrade_exceptions_table($line, $result, $sql_file);
               $ignore_line=true;
               break;
             } else {
@@ -329,7 +334,7 @@ function executeSql($sql_file, $database, $table_prefix = '', $isupgrade=false) 
           if ($lines_to_keep_together_counter == $keep_together) { // if all grouped rows have been loaded, go to execute.
             $complete_line = true;
             $lines_to_keep_together_counter=0;
-            if ($collateSuffix != '' && @mysql_get_server_info() >= '4.1' && (!defined('IGNORE_DB_CHARSET') || (defined('IGNORE_DB_CHARSET') && IGNORE_DB_CHARSET != FALSE))) {
+            if ($collateSuffix != '' && @mysqli_get_server_info() >= '4.1' && (!defined('IGNORE_DB_CHARSET') || (defined('IGNORE_DB_CHARSET') && IGNORE_DB_CHARSET != FALSE))) {
               $newline = rtrim($newline, ';') . $collateSuffix . ';';
               $collateSuffix = '';
             }
@@ -362,7 +367,6 @@ function executeSql($sql_file, $database, $table_prefix = '', $isupgrade=false) 
                echo '<br /><br />';
                $counter=0;
              }
-             if (function_exists('ob_flush')) @ob_flush();
              @flush();
           }
 
@@ -392,59 +396,75 @@ function executeSql($sql_file, $database, $table_prefix = '', $isupgrade=false) 
     return preg_replace("/[<>]/", '_', $string);
   }
 
-  function zen_validate_email($email = "root@localhost.localdomain") {
-    $valid_address = true;
-    $user ="";
-    $domain="";
-// split the e-mail address into user and domain parts
-// need to update to trap for addresses in the format of "first@last"@someplace.com
-// this method will most likely break in that case
-  list( $user, $domain ) = explode( "@", $email );
-  $valid_ip_form = '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}';
-  $valid_email_pattern = '^[a-z0-9]+[a-z0-9_\.\'\-]*@[a-z0-9]+[a-z0-9\.\-]*\.(([a-z]{2,6})|([0-9]{1,3}))$';
-  $space_check = '[ ]';
 
-// strip beginning and ending quotes, if and only if both present
-  if( (preg_match('/^["]/', $user) && preg_match('/["]$/', $user)) ){
-    $user = preg_replace ( '/^["]/', '', $user );
-    $user = preg_replace ( '/["]$/', '', $user );
-    $user = preg_replace ( '/'.$space_check.'/', '', $user ); //spaces in quoted addresses OK per RFC (?)
-    $email = $user."@".$domain; // contine with stripped quotes for remainder
-  }
+/**
+ * validates an email address
+ *
+ * Sample Valid Addresses:
+ *
+ *     first.last@host.com
+ *     firstlast@host.to
+ *     "first last"@host.com
+ *     "first@last"@host.com
+ *     first-last@host.com
+ *     first's-address@email.host.4somewhere.com
+ *     first.last@[123.123.123.123]
+ *     lastfirst@mail.international
+ *
+ *     Invalid Addresses:
+ *     first last@host.com
+ *     'first@host.com
+ *
+ * @param string The email address to validate
+ * @return boolean true if valid else false
+**/
+  function zen_validate_email($email) {
+    $valid_address = TRUE;
 
-// if e-mail domain part is an IP address, check each part for a value under 256
-  if (preg_match('/'.$valid_ip_form.'/', $domain)) {
-    $digit = explode( ".", $domain );
-    for($i=0; $i<4; $i++) {
-    if ($digit[$i] > 255) {
-      $valid_address = false;
-      return $valid_address;
-      exit;
-    }
-// stop crafty people from using internal IP addresses
-    if (($digit[0] == 192) || ($digit[0] == 10)) {
-      $valid_address = false;
-      return $valid_address;
-      exit;
-    }
-    }
-  }
+    // fail if contains no @ symbol or more than one @ symbol
+    if (substr_count($email,'@') != 1) return false;
 
-  if (!preg_match('/'.$space_check.'/', $email)) { // trap for spaces in
-    if ( preg_match('/'.$valid_email_pattern.'/i', $email)) { // validate against valid e-mail patterns
-    $valid_address = true;
-    } else {
-    $valid_address = false;
-    return $valid_address;
-    exit;
+    // split the email address into user and domain parts
+    // this method will most likely break in that case
+    list( $user, $domain ) = explode( "@", $email );
+    $valid_ip4_form = '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}';
+    $valid_email_pattern = '^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+(XN\-\-[a-z0-9]{2,20}|[a-z]{2,20}))|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$';
+    $space_check = '[ ]';
+
+    // strip beginning and ending quotes, if and only if both present
+    if( (preg_match('/^["]/', $user) && preg_match('/["]$/', $user)) ){
+      $user = preg_replace ( '/^["]/', '', $user );
+      $user = preg_replace ( '/["]$/', '', $user );
+      $user = preg_replace ( '/'.$space_check.'/', '', $user ); //spaces in quoted addresses OK per RFC (?)
+      $email = $user."@".$domain; // contine with stripped quotes for remainder
+    }
+
+    // fail if contains spaces in domain name
+    if (strstr($domain,' ')) return false;
+
+    // if email domain part is an IP address, check each part for a value under 256
+    if (preg_match('/'.$valid_ip4_form.'/', $domain)) {
+      $digit = explode( ".", $domain );
+      for($i=0; $i<4; $i++) {
+        if ($digit[$i] > 255) {
+          $valid_address = false;
+          return $valid_address;
+          exit;
+        }
+        // stop crafty people from using internal IP addresses
+        if (($digit[0] == 192) || ($digit[0] == 10)) {
+          $valid_address = false;
+          return $valid_address;
+          exit;
+        }
       }
     }
 
-// Verify e-mail has an associated MX and/or A record.
-// Need alternate method to deal with Verisign shenanigans and with Windows Servers
-//		if (!checkdnsrr($domain, "MX") && !checkdnsrr($domain, "A")) {
-//		  $valid_address = false;
-//		}
+    if (!preg_match('/'.$valid_email_pattern.'/i', $email)) { // validate against valid email pattern
+      $valid_address = false;
+      return $valid_address;
+      exit;
+    }
 
     return $valid_address;
   }
@@ -464,16 +484,22 @@ function executeSql($sql_file, $database, $table_prefix = '', $isupgrade=false) 
   }
 
   function zen_validate_password($plain, $encrypted) {
-    if (zen_not_null($plain) && zen_not_null($encrypted)) {
-      $stack = explode(':', $encrypted);
-      if (sizeof($stack) != 2) return false;
-      if (md5($stack[1] . $plain) == $stack[0]) {
-        return true;
-      }
+
+    if (!zen_not_null($plain) || !zen_not_null($encrypted)) {
+      return false;
     }
+
+    if (strpos($encrypted, '$2y$') === 0) {
+      return zcPassword::getInstance(PHP_VERSION)->validatePassword($plain, $encrypted);
+    }
+
+    $stack = explode(':', $encrypted);
+    if (sizeof($stack) == 2) {
+      return (md5($stack[1] . $plain) == $stack[0]);
+    }
+
     return false;
   }
-
 
   function zen_rand($min = null, $max = null) {
     static $seeded;
@@ -899,8 +925,8 @@ function executeSql($sql_file, $database, $table_prefix = '', $isupgrade=false) 
     if ($connection == '') $connection = $request_type;
     // Add the session ID when moving from different HTTP and HTTPS servers, or when SID is defined
     if ($session_started == true) {
-      if (defined('SID') && zen_not_null(SID)) {
-        $sid = SID;
+      if (defined('SID') && zen_not_null(constant('SID'))) {
+        $sid = constant('SID');
       } elseif ( ($request_type == 'NONSSL' && $connection == 'SSL') || ($request_type == 'SSL' && $connection == 'NONSSL') ) {
         if ($http_domain != $https_domain) {
           $sid = zen_session_name() . '=' . zen_session_id();
@@ -932,3 +958,53 @@ function executeSql($sql_file, $database, $table_prefix = '', $isupgrade=false) 
 
     return $rand_value;
   }
+
+  function zen_parse_url($url, $element = 'array', $detect_tilde = false)
+  {
+    // Read the various elements of the URL, to use in auto-detection of admin foldername (basically a simplified parse_url equivalent which automatically supports ports and uncommon TLDs)
+    $t1 = array();
+    if (strpos($url, '://')) {
+      // scheme
+      $s1 = explode('://', $url);
+      $t1['scheme'] = $s1[0];
+      $s2 = explode('/', trim($s1[1], '/'));
+    } else {
+      $s2 = explode('/', trim($url, '/'));
+    }
+    // host
+    $t1['host'] = $s2[0];
+    array_shift($s2);
+    // adjust host to accommodate /~username shared-ssl scenarios
+    if ($detect_tilde && substr($s2[0], 0, 1) == '~') {
+      $t1['host'] .= '/' . $s2[0];
+      // array_shift also therefore removes it from ['path'] below
+      array_shift($s2);
+    }
+    // now look for a parked subdomain in the URL (assumption here is that there is a "." in the foldername)
+    if ($detect_tilde && strpos($s2[0], '.') > 0) {
+      $t1['host'] .= '/' . $s2[0];
+      // array_shift also therefore removes it from ['path'] below
+      array_shift($s2);
+    }
+    // path/uri
+    $t1['path'] = implode('/', $s2);
+    // build another element: the "path parent", that is, the folder above the final path, as this might be useful in detecting complex shared-SSL folder structures.
+    array_pop($s2);
+    $t1['pathparent'] = implode('/', $s2);
+    // prepare the /path value
+    $p1 = ($t1['path'] != '') ? '/' . $t1['path'] : '';
+
+    switch($element) {
+      case 'scheme':
+      case 'host':
+      case 'path':
+      case 'pathparent':
+        return $t1[$element];
+      case '/path':
+        return $p1;
+      case 'array':
+      default:
+        return $t1;
+    }
+  }
+

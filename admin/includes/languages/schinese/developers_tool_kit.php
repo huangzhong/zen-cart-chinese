@@ -1,11 +1,10 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2013 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: developers_tool_kit.php 18698 2011-05-04 14:50:06Z wilt $
- * @Simplified Chinese version   http://www.zen-cart.cn
+ * @version GIT: $Id: Author: Jack Modified in v1.5.4 $
  */
   define('HEADING_TITLE', '开发工具集');
   define('TABLE_CONFIGURATION_TABLE', '查询常量定义');
@@ -81,4 +80,21 @@
 
   define('TEXT_CASE_SENSITIVE', '大小写敏感？');
 
-?>
+  //Search Configuration Keys
+  define('SEARCH_CFG_KEYS_HEADING_TITLE','<strong>搜索配置/参数</strong>');
+  define('SEARCH_CFG_KEYS_SEARCH_BOX_TEXT', '<strong>搜索关键字:</strong> (用于搜索配置参数名字和说明，以及完全匹配的配置值。)');
+  define('SEARCH_CFG_KEYS_TABLE_SECTION', '部分');
+  define('SEARCH_CFG_KEYS_TABLE_GROUP','分组');
+  define('SEARCH_CFG_KEYS_TABLE_TITLE', '标题');
+  define('SEARCH_CFG_KEYS_TABLE_DESCRIPTION','说明');
+  define('SEARCH_CFG_KEYS_TABLE_VALUE','值');
+  define('SEARCH_CFG_KEYS_TABLE_KEY_NAME', '关键字名');
+  define('SEARCH_CFG_KEYS_TABLE_EDIT','修改');
+  define('SEARCH_CFG_KEYS_NOT_FOUND_KEYS', '没有找到配置内容。');
+  define('SEARCH_CFG_KEYS_FOUND_KEYS', '找到配置内容。');
+  define('SEARCH_CFG_KEYS_FORM_PLACEHOLDER', '输入需要查询的关键字');
+  define('SEARCH_CFG_KEYS_FORM_BUTTON_SEARCH_SORTED_BY_GROUP', '搜索');
+  define('SEARCH_CFG_KEYS_FORM_BUTTON_SEARCH_SORTED_BY_KEY', '搜索 (键值排序)');
+  define('SEARCH_CFG_KEYS_FORM_BUTTON_VIEW_ALL', '全部');
+  define('SEARCH_CFG_KEYS_FORM_BUTTON_RESET', '重置');
+

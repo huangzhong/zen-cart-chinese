@@ -1,11 +1,10 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2012 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: store_manager.php 19689 2011-10-04 15:51:25Z drbyte $
- * @Simplified Chinese version   http://www.zen-cart.cn
+ * @version GIT: $Id: Author: Jack Modified in v1.5.4 $
  */
 
   define('HEADING_TITLE', '商店管理');
@@ -64,5 +63,5 @@
   define('TEXT_INFO_OPTIMIZING_DATABASE_TABLES', '数据库正在优化中，将会需要几分钟，请稍候。结束后会重新显示上一个菜单 ... ');
   define('SUCCESS_DB_OPTIMIZE', '数据库优化 - 处理数据表: ');
 
-  define('TEXT_INFO_PURGE_DEBUG_LOG_FILES', '<strong>清空调试日志文件</strong><br /><strong>注意: </strong>Zen Cart 记录 PHP 错误信息用于调试，很多支付模块可以设定记录调试数据用于诊断通信问题。<br />点击本清空选项将*彻底*删除*所有*PHP错误、PayPal、Authorize.net和Linkpoint/FirstData模块相关的调试日志。');
+  define('TEXT_INFO_PURGE_DEBUG_LOG_FILES', '<strong>清空调试日志文件</strong><br /><strong>注意: </strong>Zen Cart 记录 PHP 错误信息用于调试，很多支付模块可以设定记录调试数据用于诊断通信问题。<br />点击本清空选项将从 /logs/ 目录 *彻底* 删除 *所有* PHP 错误和支付模块相关的调试日志。');
   define('SUCCESS_CLEAN_DEBUG_FILES', '调试日志文件已清空');

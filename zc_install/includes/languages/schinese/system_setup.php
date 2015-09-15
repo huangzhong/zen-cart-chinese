@@ -2,7 +2,7 @@
 /**
  * @package Installer
  * @access private
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version $Id: system_setup.php 19537 2011-09-20 17:14:44Z drbyte $
@@ -17,7 +17,7 @@
   define('PHYSICAL_PATH', 'Zen Cart中文版的物理路径');
   define('PHYSICAL_PATH_INSTRUCTION', 'Zen Cart中文版目录的物理路径.<br />后面不要跟除号。');
   define('VIRTUAL_HTTP_PATH', 'Zen Cart中文版商店的网址');
-  define('VIRTUAL_HTTP_PATH_INSTRUCTION', 'Zen Cart中文版目录的网址。<br />后面不要跟除号。');
+  define('VIRTUAL_HTTP_PATH_INSTRUCTION', 'Zen Cart中文版商店的网址。<br />后面不要跟除号。');
   define('VIRTUAL_HTTPS_PATH', 'HTTPS服务器的网址');
   define('VIRTUAL_HTTPS_PATH_INSTRUCTION', '安全Zen Cart中文版目录的网址。<br />后面不要跟除号。');
   define('VIRTUAL_HTTPS_SERVER', 'HTTPS域');

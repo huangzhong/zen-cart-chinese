@@ -2,9 +2,9 @@
 <!--
 /**
  * @package documentation
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: 1.readme_installation.html 20044 2011-12-06 23:09:52Z drbyte $
+ * @version GIT: $Id: Author: DrByte  Thu Apr 24 14:23:38 2014 -0400 Modified in v1.5.3 $
  */
 //-->
 <html>
@@ -72,7 +72,20 @@ OSI Certified是开源动力的认证标志。
 </fieldset>
 <br>
 <fieldset>
-<h1 class="intro">全新安装</h1>
+<h1>Zen Cart&reg; v1.5.3 服务器要求:</h1>
+<h2>服务器要求:</h2>
+<ul>
+<li>* PHP 5.2.10 到 5.6.x, Apache 2.0 到 2.4, MySQL 4.1.3 到 5.6.x.</li>
+<li>* Apache 需要设置 AllowOverride 为 'All' 或者至少 'Limit' 和 'Indexes'参数，最好也包括 'Options' 参数。</li>
+<li>* PHP 需要支持带 OpenSSL 的 CURL。</li>
+</ul>
+<p>Zen Cart&reg; 可以在 Windows/IIS 服务器上运行，但是建议使用 <strong>Linux/Apache 服务器以获得更佳结果。</strong>.</p>
+</fieldset>
+<br>
+<fieldset>
+<h1 class="intro center">全新安装</h1>
+<h1>PA-DSS 规范安装</h1>
+有关 PA-DSS 规范的安装方法, 查看 /docs/ 目录下的安装指南。
 <div><h1>开始 ... </h1>
 <p>这是安装Zen Cart中文版的指南。如果您已有Zen Cart&reg;而需要从旧版本升级，请看<strong><a href="./2.readme_how_to_upgrade.html" target="_blank">升级指南</a></strong>以及<strong><a href="./index.html" target="_blank">新增功能</a>文档。</strong><br>
 </p>
@@ -198,18 +211,21 @@ OSI Certified是开源动力的认证标志。
 <strong>警告: 发现问题</strong><br>
 <ul>
 <li><span class="error"> /includes/configure.php 文件不存在。</span>&nbsp;&nbsp;<span class="pseudolink">详细说明...</span></li><li><span class="error">/admin/includes/configure.php 文件不存在。</span>&nbsp;&nbsp;<span class="pseudolink">详细说明...</span>
-</li><br>
+<br></li>
 </ul></div>
-<h3>phpBB安装</h3>下面，提示您输入phpBB路径。如果您的网站上已经安装了phpBB论坛，可以和Zen Cart连接，只要输入服务器上安装phpBB文件的路径。例如, 如果在<span class="filename">......public_html/forums</span>&nbsp;中，那么您在phpBB文件路径中输入<span class="filename">/forums</span>。
 <h3>数据库安装</h3>
 下一个屏幕, 需要输入MySQL数据库的信息，包括用户名和密码。这可以从您的主机商提供的cPanel或相关屏幕获得。如果您还没有MySQL数据库及用户名和密码，那么您需要创建一个。<br>
 具体方法请咨询您的主机提供商。<strong>在Zen Cart中文版安装程序能继续安装前，您需要创建数据库和用户。</strong>.<br>
 <br>
 <em>该屏幕上的其它信息:</em>
-<ul>
-<li>目前，MySQL是主要的数据库类型。<br>
-以后的版本也许会支持其它的数据库类型。</li><br>
+<ul><li>目前，MySQL是主要的数据库类型。<br>
+以后的版本也许会支持其它的数据库类型。</li>
 <li>出于安全考虑，建议您将数据库Sessions保存在数据库中。</li></ul>
+
+<h3>系统设置</h3>在系统设置页面，需要完成本文档前面提到的&quot;安装前需要做的准备&quot;。<br>
+<br>
+选择是否启用 SSL。如果你没有 SSL 证书，<strong>现在不要启动这个功能</strong>。<em>以后可以修改。(详细内容参考<a href="http://tutorials.zen-cart.com/index.php?article=14" target="_blank">启用 SSL 教程</a>)。</em><br>
+<br>
 <h3>商店设置</h3>
 现在，填写您的商店信息。<br>
 <br>
@@ -220,7 +236,8 @@ OSI Certified是开源动力的认证标志。
 <br>
 建议您安装演示数据以熟悉本软件。演示数据内含很多例子，解释和展示了Zen Cart的大量功能。<br>
 <br>
-您也可以安装一个带演示数据的测试站点，及一个单独的正式站点。这样，可以利用演示数据获得帮助。</div> <br>
+您也可以安装一个带演示数据的测试站点，及一个单独的正式站点。这样，可以利用演示数据获得帮助。</div>
+<br>
 <br>
 点击保存商店设置后，会有些延迟，是因为要创建数据库表及安装可选的演示数据。
 <h3>管理设置</h3>
@@ -273,7 +290,7 @@ OSI Certified是开源动力的认证标志。
 </p>
 </div>
 </fieldset>
-<p align="center"><em>Zen Cart 中文版 2012</em></p>
+<p align="center"><em>版权所有 2004 - 2015 Zen Cart 中文版 www.zen-cart.cn</em></p>
 <br><br>
 </body>
 </html>

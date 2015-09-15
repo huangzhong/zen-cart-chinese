@@ -1,26 +1,11 @@
 <?php
-//
-// +----------------------------------------------------------------------+
-// |zen-cart Open Source E-commerce                                       |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2003 The zen-cart developers                           |
-// |                                                                      |
-// | http://www.zen-cart.com/index.php                                    |
-// |                                                                      |
-// | Portions Copyright (c) 2003 osCommerce                               |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license,       |
-// | that is bundled with this package in the file LICENSE, and is        |
-// | available through the world-wide-web at the following url:           |
-// | http://www.zen-cart.com/license/2_0.txt.                             |
-// | If you did not receive a copy of the zen-cart license and are unable |
-// | to obtain it through the world-wide-web, please send a note to       |
-// | license@zen-cart.com so we can mail you a copy immediately.          |
-// +----------------------------------------------------------------------+
-// | Simplified Chinese version   http://www.zen-cart.cn                  |
-// +----------------------------------------------------------------------+
-//  $Id: index.php 1369 2005-05-14 01:17:19Z drbyte $
-//
+/**
+ * @package admin
+ * @copyright Copyright 2003-2013 Zen Cart Development Team
+ * @copyright Portions Copyright 2003 osCommerce
+ * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
+ * @version GIT: $Id: Author: Jack Modified in v1.5.4 $
+ */
 
 define('HEADING_TITLE', '选择操作...');
 
@@ -72,4 +57,33 @@ define('BOX_ENTRY_SALEMAKER_ACTIVE','促销商品');
 define('LAST_10_DAYS', '最近%s天的统计');
 define('SESSION', 'Session');
 define('TOTAL', '总计');
-?>
+
+// DASHBOARD - HOME PAGE OF ADMIN - CUSTOMERS section
+define('BOX_TITLE_CUSTOMERS', '客户');
+define('BOX_ENTRY_CUSTOMERS_NORMAL', '- 所有帐号 :');
+define('BOX_ENTRY_CUSTOMERS_TOTAL', '客户账号总计 :');
+define('BOX_ENTRY_CUSTOMERS_TOTAL_DISTINCT', '唯一客户总计 :');
+
+define('TEXT_REMOVE', '删除');
+define('TEXT_UPDATE', '更新');
+define('TEXT_CONFIRM_REMOVE', '您确定要从管理界面删除这个小工具吗？');
+define('TEXT_WIDGET_UPDATE_HEADER', '小工具设置已更新');
+
+define ('TEXT_TIMER_SELECT_NONE', '不刷新');
+define ('TEXT_TIMER_SELECT_1MIN', '每分钟刷新');
+define ('TEXT_TIMER_SELECT_5MIN', '每5分钟刷新');
+define ('TEXT_TIMER_SELECT_10MIN', '每10分钟刷新');
+define ('TEXT_TIMER_SELECT_15MIN', '每15分钟刷新');
+
+define ('TEXT_NO_WIDGETS_TO_INSTALL', '没有小工具可安装。');
+define('TEXT_FORM_ERROR_CHOOSE_ZONE', '请选择地区');
+define('TEXT_WARNING_SUPERUSER_REQUIRED', '只有超级管理员可以执行初始化向导，在该操作前不能使用管理界面。');
+define('TEXT_HEADING_SETUP_WIZARD', '初始化设置向导');
+
+define('TEXT_FORM_LEGEND_REQUIRED_SETUP', '需要设置的内容');
+define('TEXT_FORM_LABEL_STORE_NAME', '商店名称');
+define('TEXT_FORM_LABEL_STORE_OWNER', '商店店主');
+define('TEXT_FORM_LABEL_STORE_OWNER_EMAIL', '店主邮箱');
+define('TEXT_FORM_LABEL_STORE_COUNTRY', '商店国家');
+define('TEXT_FORM_LABEL_STORE_ZONE', '商店地区');
+define('TEXT_FORM_LABEL_STORE_ADDRESS', '商店地址');

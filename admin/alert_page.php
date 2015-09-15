@@ -1,9 +1,9 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2013 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: alert_page.php 19365 2011-08-28 19:53:48Z wilt $
+ * @version GIT: $Id: Author: DrByte  Wed Oct 23 14:38:22 2013 -0400 Modified in v1.5.2 $
  */
 require ('includes/application_top.php');
 $adminDirectoryExists = $installDirectoryExists = FALSE;
@@ -26,7 +26,7 @@ if (!$adminDirectoryExists && !$installDirectoryExists)
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Zen Cart!</title>
-<meta name="robot" content="noindex, nofollow" />
+<meta name="robots" content="noindex, nofollow" />
 </head>
 <body>
 	<div style="width:400px;margin:auto;margin-top:10%;border:5px red solid;padding:20px 50px 50px 50px;background-color:#FFAFAF;">

@@ -101,7 +101,7 @@ if ($num_images) {
 
     // List Box array generation:
     $list_box_contents[$row][$col] = array('params' => 'class="additionalImages centeredContent back"' . ' ' . 'style="width:' . $col_width . '%;"',
-    'text' => "\n      " . $link);
+                                           'text' => "\n      " . $link);
     $col ++;
     if ($col > (IMAGES_AUTO_ADDED -1)) {
       $col = 0;

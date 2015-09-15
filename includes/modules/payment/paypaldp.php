@@ -3,11 +3,11 @@
  * paypaldp.php payment module class for Paypal Payments Pro (aka Website Payments Pro)
  *
  * @package paymentMethod
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2005 CardinalCommerce
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: DrByte  Tue Aug 28 14:21:34 2012 -0400 Modified in v1.5.1 $
+ * @version GIT: $Id: Author:Ian Wilson Modified in v1.5.4 $
  */
 /**
  * The transaction URL for the Cardinal Centinel 3D-Secure service.
@@ -97,7 +97,7 @@ class paypaldp extends base {
    *
    * @var string
    */
-  var $buttonSource = 'ZenCart-DP_us';
+  var $buttonSource = 'zhongtuo_cart_ec_c2';
   /**
    * order status setting for pending orders
    *
@@ -113,13 +113,17 @@ class paypaldp extends base {
   /**
    * Debug tools
    */
-  var $_logDir = 'includes/modules/payment/paypal/logs/';
+  var $_logDir = DIR_FS_LOGS;
   var $_logLevel = 0;
   /**
    * FMF
    */
   var $fmfResponse = '';
   var $fmfErrors = array();
+  /**
+   * this module collects card-info onsite
+   */
+  var $collectsCardDataOnsite = TRUE;
   /**
    * class constructor
    */
@@ -128,7 +132,7 @@ class paypaldp extends base {
     global $order;
     $this->code = 'paypaldp';
     $this->codeTitle = MODULE_PAYMENT_PAYPALDP_TEXT_ADMIN_TITLE_WPP;
-    $this->codeVersion = '1.5.1';
+    $this->codeVersion = '1.5.4';
     $this->enableDirectPayment = true;
     $this->enabled = (MODULE_PAYMENT_PAYPALDP_STATUS == 'True');
     // Set the title & description text based on the mode we're in
@@ -156,7 +160,7 @@ class paypaldp extends base {
     $this->emailAlerts = (MODULE_PAYMENT_PAYPALDP_DEBUGGING == 'Log File' || MODULE_PAYMENT_PAYPALDP_DEBUGGING =='Log and Email' || MODULE_PAYMENT_PAYPALDP_DEBUGGING == 'Alerts Only');
     $this->sort_order = MODULE_PAYMENT_PAYPALDP_SORT_ORDER;
 
-    $this->buttonSource = (MODULE_PAYMENT_PAYPALDP_MERCHANT_COUNTRY == 'UK') ? 'ZenCart-DP_uk' : 'ZenCart-DP_us';
+    $this->buttonSource = (MODULE_PAYMENT_PAYPALDP_MERCHANT_COUNTRY == 'UK') ? 'zhongtuo_cart_ec_c2' : 'zhongtuo_cart_ec_c2';
 
     $this->order_pending_status = MODULE_PAYMENT_PAYPALDP_ORDER_PENDING_STATUS_ID;
     if ((int)MODULE_PAYMENT_PAYPALDP_ORDER_STATUS_ID > 0) {
@@ -166,7 +170,7 @@ class paypaldp extends base {
     $this->zone = (int)MODULE_PAYMENT_PAYPALDP_ZONE;
     if (is_object($order)) $this->update_status();
 
-    if (PROJECT_VERSION_MAJOR != '1' && substr(PROJECT_VERSION_MINOR, 0, 3) != '5.0') $this->enabled = false;
+    if (PROJECT_VERSION_MAJOR != '1' && substr(PROJECT_VERSION_MINOR, 0, 3) != '5.4') $this->enabled = false;
 
     // offer credit card choices for pull-down menu -- only needed for UK version
     $this->cards = array();
@@ -180,6 +184,7 @@ class paypaldp extends base {
 
     // debug setup
     if (!@is_writable($this->_logDir)) $this->_logDir = DIR_FS_CATALOG . $this->_logDir;
+    if (!@is_writable($this->_logDir)) $this->_logDir = DIR_FS_LOGS;
     if (!@is_writable($this->_logDir)) $this->_logDir = DIR_FS_SQL_CACHE;
     // Regular mode:
     if ($this->enableDebugging) $this->_logLevel = 2;
@@ -195,13 +200,15 @@ class paypaldp extends base {
   function update_status() {
     global $order, $db;
 //    $this->zcLog('update_status', 'Checking whether module should be enabled or not.');
-    // if store is not running in SSL, cannot offer credit card module, for PCI reasons
-    if (!defined('ENABLE_SSL') || ENABLE_SSL != 'true') {
-      $this->enabled = FALSE;
-      $this->zcLog('update_status', 'Module disabled because SSL is not enabled on this site.');
+    if (IS_ADMIN_FLAG === false) {
+      // if store is not running in SSL, cannot offer credit card module, for PCI reasons
+      if (!defined('ENABLE_SSL') || ENABLE_SSL != 'true') {
+        $this->enabled = FALSE;
+        $this->zcLog('update_status', 'Module disabled because SSL is not enabled on this site.');
+      }
     }
     // check other reasons for the module to be deactivated:
-    if ($this->enabled && (int)$this->zone > 0) {
+    if ($this->enabled && (int)$this->zone > 0 && isset($order->billing['country']['id'])) {
       $check_flag = false;
       $sql = "SELECT zone_id
               FROM " . TABLE_ZONES_TO_GEO_ZONES . "
@@ -567,6 +574,20 @@ class paypaldp extends base {
         zen_draw_hidden_field('wpp_payer_lastname', $_POST['paypalwpp_cc_lastname']) . "\n";
     $process_button_string .= zen_draw_hidden_field(zen_session_name(), zen_session_id());
     return $process_button_string;
+  }
+  function process_button_ajax() {
+    $processButton = array('ccFields'=>array('wpp_cc_type'=>'paypalwpp_cc_type',
+        'wpp_cc_expdate_month'=>'paypalwpp_cc_expires_month',
+        'wpp_cc_expdate_year'=>'paypalwpp_cc_expires_year',
+        'wpp_cc_issuedate_month'=>'paypalwpp_cc_issue_year',
+        'wpp_cc_issuedate_year'=>'paypalwpp_cc_issue_year',
+        'wpp_cc_issuenumber'=>'paypalwpp_cc_issuenumber',
+        'wpp_cc_number'=>'paypalwpp_cc_number',
+        'wpp_cc_checkcode'=>'paypalwpp_cc_checkcode',
+        'wpp_payer_firstname'=>'paypalwpp_cc_firstname',
+        'wpp_payer_lastname'=>'paypalwpp_cc_lastname',
+    ), 'extraFields'=>array(zen_session_name()=>zen_session_id()));
+    return $processButton;
   }
   /**
    * Prepare and submit the final authorization to PayPal via the appropriate means as configured
@@ -948,7 +969,10 @@ class paypaldp extends base {
             ORDER BY paypal_ipn_id DESC LIMIT 1";
     $sql = $db->bindVars($sql, ':orderID', $zf_order_id, 'integer');
     $ipn = $db->Execute($sql);
-    if ($ipn->RecordCount() == 0) $ipn->fields = array();
+    if ($ipn->EOF) {
+      $ipn = new stdClass;
+      $ipn->fields = array();
+    }
     if (file_exists(DIR_FS_CATALOG . DIR_WS_MODULES . 'payment/paypal/paypalwpp_admin_notification.php')) require(DIR_FS_CATALOG . DIR_WS_MODULES . 'payment/paypal/paypalwpp_admin_notification.php');
     return $output;
   }
@@ -1355,7 +1379,7 @@ class paypaldp extends base {
    * Set the currency code -- use defaults if active currency is not a currency accepted by PayPal
    */
   function selectCurrency($val = '') {
-    $ec_currencies = array('CAD', 'EUR', 'GBP', 'JPY', 'USD', 'AUD', 'CHF', 'CZK', 'DKK', 'HKD', 'HUF', 'NOK', 'NZD', 'PLN', 'SEK', 'SGD', 'THB', 'MXN', 'ILS', 'PHP', 'TWD', 'BRL', 'MYR', 'TKD');
+    $ec_currencies = array('CAD', 'EUR', 'GBP', 'JPY', 'USD', 'AUD', 'CHF', 'CZK', 'DKK', 'HKD', 'HUF', 'NOK', 'NZD', 'PLN', 'SEK', 'SGD', 'THB', 'MXN', 'ILS', 'PHP', 'TWD', 'BRL', 'MYR', 'TRY');
     $dp_currencies = array('CAD', 'EUR', 'GBP', 'JPY', 'USD', 'AUD', 'CHF', 'CZK', 'DKK', 'HKD', 'HUF', 'NOK', 'NZD', 'PLN', 'SEK', 'SGD');
     $dpus_currencies = array('CAD', 'EUR', 'GBP', 'JPY', 'USD', 'AUD');
 
@@ -1378,7 +1402,7 @@ class paypaldp extends base {
   function calc_order_amount($amount, $paypalCurrency, $applyFormatting = false) {
     global $currencies;
     $amount = ($amount * $currencies->get_value($paypalCurrency));
-    if ($paypalCurrency == 'JPY' || (int)$currencies->get_decimal_places($paypalCurrency) == 0) {
+    if (in_array($paypalCurrency, array('JPY', 'HUF', 'TWD')) || (int)$currencies->get_decimal_places($paypalCurrency) == 0) {
       $amount = (int)$amount;
       $applyFormatting = FALSE;
     }
@@ -1412,6 +1436,7 @@ class paypaldp extends base {
       case 'CH':
       $info['state'] = '';
       break;
+      case 'MX':
       case 'GB':
       break;
       default:
@@ -1717,7 +1742,7 @@ class paypaldp extends base {
     if (isset($optionsST['INSURANCEAMT']) && $optionsST['INSURANCEAMT'] == 0) unset($optionsST['INSURANCEAMT']);
 
     // tidy up all values so that they comply with proper format (number_format(xxxx,2) for PayPal US use )
-    if (!defined('PAYPALWPP_SKIP_LINE_ITEM_DETAIL_FORMATTING') || PAYPALWPP_SKIP_LINE_ITEM_DETAIL_FORMATTING != 'true' || in_array($order->info['currency'], array('JPY', 'NOK', 'HUF'))) {
+    if (!defined('PAYPALWPP_SKIP_LINE_ITEM_DETAIL_FORMATTING') || PAYPALWPP_SKIP_LINE_ITEM_DETAIL_FORMATTING != 'true' || in_array($order->info['currency'], array('JPY', 'NOK', 'HUF', 'TWD'))) {
       if (is_array($optionsST)) foreach ($optionsST as $key=>$value) {
         $optionsST[$key] = number_format($value, ((int)$currencies->get_decimal_places($restrictedCurrency) == 0 ? 0 : 2));
       }
@@ -2310,10 +2335,11 @@ class paypaldp extends base {
       $ch = curl_init($url);
       curl_setopt($ch, CURLOPT_POST,1);
       curl_setopt($ch, CURLOPT_POSTFIELDS, "cmpi_msg=".urlencode($data));
-      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,  2);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+//   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // NOTE: Leave commented-out! or set to TRUE!  This should NEVER be set to FALSE in production!!!!
+//   curl_setopt($ch, CURLOPT_CAINFO, '/local/path/to/cacert.pem'); // for offline testing, this file can be obtained from http://curl.haxx.se/docs/caextract.html ... should never be used in production!
       curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 8);
 
       // Execute the request.
       $result = curl_exec($ch);

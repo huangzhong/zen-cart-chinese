@@ -36,10 +36,6 @@ if (!isset($flag_disable_footer) || !$flag_disable_footer) {
 </div>
 <!--eof-navigation display -->
 
-<!--bof-PayPal logo -->
-<div class="center"><img  src="https://www.paypal.com/en_US/i/bnr/horizontal_solution_PPeCheck.gif" border="0" alt="Solution Graphics"></div>
-<!--eof-PayPal logo -->
-
 <!--bof-ip address display -->
 <?php
 if (SHOW_FOOTER_IP == '1') {

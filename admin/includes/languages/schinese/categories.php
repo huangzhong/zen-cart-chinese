@@ -1,11 +1,10 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2009 Zen Cart Development Team
+ * @copyright Copyright 2003-2013 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: categories.php 14139 2009-08-10 13:46:02Z wilt $
- * @Simplified Chinese version   http://www.zen-cart.cn
+ * @version GIT: $Id: Author: Jack Modified in v1.5.4 $
  */
 
 define('HEADING_TITLE', '商品分类');
@@ -137,11 +136,6 @@ define('ERROR_CANNOT_ADD_PRODUCT_TYPE','该商品类型不能加到该类中. �
   define('TEXT_CATEGORIES_IMAGE_DIR','上传目录:');
   define('TEXT_CATEGORIES_IMAGE_MANUAL', '<strong>或从服务器上选择已有图像文件，文件名:</strong>');
 
-  define('TEXT_VIRTUAL_PREVIEW','提示: 免运费且不要送货地址');
-  define('TEXT_VIRTUAL_EDIT','提示: 免运费且不要送货地址');
-  define('TEXT_FREE_SHIPPING_PREVIEW','提示: 免运费, 但需要送货地址');
-  define('TEXT_FREE_SHIPPING_EDIT','提示: 免运费, 但需要送货地址');
-
   define('TEXT_PRODUCTS_QTY_BOX_STATUS_PREVIEW','提示: 不显示数量方框, 缺省数量为1');
   define('TEXT_PRODUCTS_QTY_BOX_STATUS_EDIT','提示: 不显示数量方框, 缺省数量为1');
 
@@ -200,13 +194,12 @@ define('TEXT_PRODUCTS_STATUS_ON_OF',' / ');
 define('TEXT_PRODUCTS_STATUS_ACTIVE',' 开启 ');
 
 define('TEXT_CATEGORIES_DESCRIPTION', '分类简介:');
-define('PRODUCTS_PRICE_IS_CALL_FOR_PRICE_TEXT', '商品价格面议');
 
 // Metatags
-  define('TEXT_INFO_HEADING_EDIT_CATEGORY_META_TAGS', '分类元标签定义');
-  define('TEXT_EDIT_CATEGORIES_META_TAGS_INTRO', '自定义元标签');
-  define('TEXT_EDIT_CATEGORIES_META_TAGS_TITLE', '标题:');
-  define('TEXT_EDIT_CATEGORIES_META_TAGS_KEYWORDS', '关键字:');
-  define('TEXT_EDIT_CATEGORIES_META_TAGS_DESCRIPTION', '描述:');
+define('TEXT_INFO_HEADING_EDIT_CATEGORY_META_TAGS', '分类元标签定义');
+define('TEXT_EDIT_CATEGORIES_META_TAGS_INTRO', '自定义元标签');
+define('TEXT_EDIT_CATEGORIES_META_TAGS_TITLE', '标题:');
+define('TEXT_EDIT_CATEGORIES_META_TAGS_KEYWORDS', '关键字:');
+define('TEXT_EDIT_CATEGORIES_META_TAGS_DESCRIPTION', '描述:');
 
   define('WARNING_PRODUCTS_IN_TOP_INFO', '警告: 顶级分类中有商品，这会导致价格显示不正确。发现的商品: ');

@@ -1,10 +1,10 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: define_pages_editor.php 19330 2011-08-07 06:32:56Z drbyte $
+ * @version GIT: $Id: Author: DrByte  Jun 30 2014 Modified in v1.5.4 $
  */
 
   require('includes/application_top.php');
@@ -35,6 +35,7 @@
   }
 
   $action = (isset($_GET['action']) ? $_GET['action'] : '');
+  if (isset($_GET['filename'])) $_GET['filename'] = str_replace('../', '!HA'.'CK'.'ER_A'.'LERT!', $_GET['filename']);
 
   $za_who = $_GET['za_lookup'];
 
@@ -77,6 +78,7 @@
           fwrite($new_file, $file_contents, strlen($file_contents));
           fclose($new_file);
         }
+        zen_record_admin_activity('Define-Page-Editor was used to save changes to file ' . $file, 'info');
         zen_redirect(zen_href_link(FILENAME_DEFINE_PAGES_EDITOR));
       }
       break;
@@ -94,6 +96,7 @@
                                'text' => $languages[$i]['name']);
   }
   if (!$lng_exists) $_SESSION['language'] = $language;
+
 ?>
 <!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html <?php echo HTML_PARAMS; ?>>

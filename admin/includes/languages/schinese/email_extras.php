@@ -4,8 +4,7 @@
  * @copyright Copyright 2003-2011 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: email_extras.php 18698 2011-05-04 14:50:06Z wilt $
- * @Simplified Chinese version   http://www.zen-cart.cn
+ * @version GIT: $Id: Author: Jack Modified in v1.5.4 $
  */
 
 // office use only
@@ -23,9 +22,9 @@
   define('OFFICE_DATE_TIME','日期和时间:');
 
 // email disclaimer
-  define('EMAIL_DISCLAIMER', '该电子邮件地址是您或我们的一个客户提供的. 如果您没有登记帐号, 或者您错误接收了该邮件, 请发邮件到 %s');
+  define('EMAIL_DISCLAIMER', "\n" . '该电子邮件地址是您或我们的一个客户提供的. 如果您没有登记帐号, 或者您错误接收了该邮件, 请发邮件到 %s');
   define('EMAIL_SPAM_DISCLAIMER','该电子邮件遵循美国2004年1月1日生效的反垃圾邮件条款. 退订请发到以上地址, 我们尊重您的要求.');
-  define('EMAIL_FOOTER_COPYRIGHT','Copyright &copy; ' . date('Y') . ' <a href="http://www.zen-cart.cn" target="_blank">Zen Cart 中文版</a>。Powered by <a href="http://www.zen-cart.cn" target="_blank">Zen Cart</a>');
+  define('EMAIL_FOOTER_COPYRIGHT','版权所有 &copy; ' . date('Y') . ' <a href="http://www.zen-cart.cn" target="_blank">Zen Cart 中文版</a>。Powered by <a href="http://www.zen-cart.cn" target="_blank">Zen Cart</a>');
   define('SEND_EXTRA_GV_ADMIN_EMAILS_TO_SUBJECT','[管理员已发GV]');
   define('SEND_EXTRA_DISCOUNT_COUPON_ADMIN_EMAILS_TO_SUBJECT','[优惠券]');
   define('SEND_EXTRA_ORDERS_STATUS_ADMIN_EMAILS_TO_SUBJECT','[订单状态]');
@@ -42,3 +41,4 @@ define('TEXT_EMAIL_SUBJECT_ADMIN_USER_CHANGED', '管理提示: 管理用户的�
 define('TEXT_EMAIL_ALERT_ADM_EMAIL_CHANGED', '管理提示: 管理用户 (%s) 的邮件地址从 (%s) 改为 (%s) ，修改人 (%s)');
 define('TEXT_EMAIL_ALERT_ADM_NAME_CHANGED', '管理提示: 管理用户 (%s) 的用户名从 (%s) 改为 (%s) ，修改人 (%s)');
 define('TEXT_EMAIL_ALERT_ADM_PROFILE_CHANGED', '管理提示: 管理用户 (%s) 的权限从 (%s) 改为 (%s) ，修改人 (%s)');
+

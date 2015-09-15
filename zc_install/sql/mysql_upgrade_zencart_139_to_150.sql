@@ -53,7 +53,7 @@ ALTER TABLE sessions CHANGE COLUMN sesskey sesskey varchar(64) NOT NULL default 
 ALTER TABLE admin_activity_log CHANGE COLUMN log_id log_id bigint(15) NOT NULL auto_increment;
 ALTER TABLE admin_activity_log ADD COLUMN flagged tinyint NOT NULL default '0';
 ALTER TABLE admin_activity_log ADD COLUMN attention varchar(255) NOT NULL default '';
-ALTER TABLE admin_activity_log ADD COLUMN gzpost mediumblob;
+ALTER TABLE admin_activity_log ADD COLUMN gzpost mediumblob ;
 ALTER TABLE admin_activity_log DROP INDEX page_accessed;
 ALTER TABLE admin_activity_log DROP INDEX access_date;
 ALTER TABLE admin_activity_log ADD INDEX idx_page_accessed_zen (page_accessed);

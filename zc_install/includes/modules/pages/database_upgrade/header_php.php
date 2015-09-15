@@ -2,10 +2,10 @@
 /**
  * @package Installer
  * @access private
- * @copyright Copyright 2003-2012 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version GIT: $Id: Author: DrByte  Tue Aug 28 17:13:32 2012 -0400 Modified in v1.5.1 $
+ * @version GIT: $Id: Author: DrByte  Thu Apr 24 13:48:29 2014 -0400 Modified in v1.5.4 $
  */
 
 /*
@@ -27,7 +27,7 @@
 /////////////////////////////////////////////////////////////////////
 //this is the latest database-version-level that this script knows how to inspect and upgrade to.
 //it is used to determine whether to stay on the upgrade page when done, or continue to the finished page
-$latest_version = '1.5.1';
+$latest_version = '1.5.4';
 
 ///////////////////////////////////
 $is_upgrade = true; //that's what this page is all about!
@@ -82,6 +82,21 @@ $sniffer_text = '';
 
 //display options based on what was found -- THESE SHOULD BE PROCESSED IN REVERSE ORDER, NEWEST VERSION FIRST... !
 //that way only the "earliest-required" upgrade is suggested first.
+    $needs_v1_5_4=false;
+    if (!$dbinfo->version154) {
+      $sniffer_text =  ' upgrade v1.5.3 to v1.5.4';
+      $needs_v1_5_4=true;
+    }
+    $needs_v1_5_3=false;
+    if (!$dbinfo->version153) {
+      $sniffer_text =  ' upgrade v1.5.2 to v1.5.3';
+      $needs_v1_5_3=true;
+    }
+    $needs_v1_5_2=false;
+    if (!$dbinfo->version152) {
+      $sniffer_text =  ' upgrade v1.5.1 to v1.5.2';
+      $needs_v1_5_2=true;
+    }
     $needs_v1_5_1=false;
     if (!$dbinfo->version151) {
       $sniffer_text =  ' upgrade v1.5.0 to v1.5.1';
@@ -229,6 +244,10 @@ if (ZC_UPG_DEBUG2==true) {
   echo '<br>138='.$dbinfo->version138;
   echo '<br>139='.$dbinfo->version139;
   echo '<br>150='.$dbinfo->version150;
+  echo '<br>151='.$dbinfo->version151;
+  echo '<br>152='.$dbinfo->version152;
+  echo '<br>153='.$dbinfo->version153;
+  echo '<br>154='.$dbinfo->version154;
   echo '<br>';
   }
 
@@ -403,6 +422,24 @@ if (ZC_UPG_DEBUG2==true) {
             if (ZC_UPG_DEBUG2==true) echo $sniffer_file.'<br>';
             $got_v1_5_1 = true; //after processing this step, this will be the new version-level
             $db_upgraded_to_version='1.5.1';
+            break;
+       case '1.5.1':  // upgrading from v1.5.1 TO 1.5.2
+            $sniffer_file = '_upgrade_zencart_151_to_152.sql';
+            if (ZC_UPG_DEBUG2==true) echo $sniffer_file.'<br>';
+            $got_v1_5_2 = true; //after processing this step, this will be the new version-level
+            $db_upgraded_to_version='1.5.2';
+            break;
+       case '1.5.2':  // upgrading from v1.5.2 TO 1.5.3
+            $sniffer_file = '_upgrade_zencart_152_to_153.sql';
+            if (ZC_UPG_DEBUG2==true) echo $sniffer_file.'<br>';
+            $got_v1_5_3 = true; //after processing this step, this will be the new version-level
+            $db_upgraded_to_version='1.5.3';
+            break;
+       case '1.5.3':  // upgrading from v1.5.3 TO 1.5.4
+            $sniffer_file = '_upgrade_zencart_153_to_154.sql';
+            if (ZC_UPG_DEBUG2==true) echo $sniffer_file.'<br>';
+            $got_v1_5_4 = true; //after processing this step, this will be the new version-level
+            $db_upgraded_to_version='1.5.4';
             break;
           default:
             $nothing_to_process=true;

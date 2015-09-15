@@ -25,8 +25,6 @@ $breadcrumb->add(NAVBAR_TITLE);
 require DIR_WS_CLASSES . 'site_map.php';
 $zen_SiteMapTree = new zen_SiteMapTree;
 
-$_SESSION['navigation']->remove_current_page();  // Remove page from navigation history
-
 // This should be last line of the script:
 $zco_notifier->notify('NOTIFY_HEADER_END_PAGE_NOT_FOUND');
 ?>
